@@ -6,4 +6,11 @@ import { Component } from '@angular/core';
     templateUrl: './hero.component.html',
     styleUrl: './hero.component.scss'
 })
-export class HeroComponent {}
+export class HeroComponent {
+    clicked = false;
+    hovered = false;
+
+    onMouseEnter() { this.hovered = true; }
+    onMouseLeave() { this.hovered = false; this.clicked = false; }
+    onSurveyClick() { this.clicked = true; }
+}

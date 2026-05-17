@@ -9,13 +9,18 @@
                 Create and share surveys in minutes – from team events to workplace culture.
                 Collect opinions, engage your audience, and turn feedback into action.
             </p>
-            <button class="hero-new-survey-btn">New survey</button>
+            <button class="hero-new-survey-btn" (click)="onSurveyClick()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+                New survey
+                <div class="hero-new-survey-btn-plus">
+                    <img [src]="clicked ? 'img/button-check.svg' : 'img/button-plus.svg'" [class]="clicked ? 'button-check' : 'button-plus'" alt="">
+                </div>
+            </button>
         </div>
         <div class="hero-right">
             <div class="hero-illustration" aria-hidden="true">
-                <img src="img/illustration.png" alt="Illustration">
+                <img src="img/illustration-1.png" alt="Illustration">
+                <img src="img/illustration-2.png" alt="Illustration">
             </div>
-            <!-- <div class="hero-illustration-placeholder"></div> -->
         </div>
     </div>
 </section>
