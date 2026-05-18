@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SurveyListAllComponent } from '../survey-list-all/survey-list-all.component';
 
 interface Survey {
     id: string;
@@ -11,7 +12,7 @@ interface Survey {
 @Component({
     selector: 'app-survey-list',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, SurveyListAllComponent],
     templateUrl: './survey-list.component.html',
     styleUrl: './survey-list.component.scss'
 })

@@ -1,0 +1,33 @@
+<div class="list">
+  <div class="list-controls">
+    <div class="list-tabs">
+      <button
+        class="list-tab"
+        [class.list-tab--active]="activeTab === 'active'"
+        (click)="setTab('active')">
+        Active survey
+      </button>
+      <button
+        class="list-tab"
+        [class.list-tab--active]="activeTab === 'past'"
+        (click)="setTab('past')">
+        Past survey
+      </button>
+    </div>
+    <button class="list-sort">Sort by categories ▾</button>
+  </div>
+
+  <div class="list-grid">
+    @for (survey of surveys; track survey.id) {
+      <div class="list-card">
+        <div class="list-card-top">
+          <span class="list-card-category">{{ survey.category }}</span>
+          <h4 class="list-card-title">{{ survey.title }}</h4>
+        </div>
+        <span class="list-card-badge">
+          Ends in {{ survey.endsInDays }} {{ survey.endsInDays === 1 ? 'Day' : 'Days' }}
+        </span>
+      </div>
+    }
+  </div>
+</div>

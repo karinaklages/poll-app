@@ -47,6 +47,7 @@
     aspect-ratio: 1;
     cursor: pointer;
     transition: transform 0.15s ease;
+    margin-bottom: var(--space-2xl);
 
     &:hover {
         background: var(--color-lilac-middle);
