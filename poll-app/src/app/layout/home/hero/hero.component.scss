@@ -102,7 +102,8 @@
 .hero-illustration {
     position: relative;
 
-    img {
+    img:nth-child(1),
+    img:nth-child(2) {
         display: block;
         width: 420px;
     }
@@ -114,11 +115,34 @@
         opacity: 0;
     }
 
-    &:hover img:nth-child(1) {
-        opacity: 0;
-    }
+    &:hover img:nth-child(1) { opacity: 0; }
+    &:hover img:nth-child(2) { opacity: 1; }
+}
 
-    &:hover img:nth-child(2) {
-        opacity: 1;
+.hero-bubble {
+    position: absolute;
+    width: 90px;
+    top: 20%;
+    left: 18%;
+    filter: none;
+    transition: transform 0.3s ease;
+}
+
+.hero-check-circle {
+    position: absolute;
+    width: 85px;
+    bottom: 18%;
+    right: 15%;
+    z-index: -1;
+    filter: none;
+    transition: transform 0.3s ease;
+}
+
+.hero-illustration:hover {
+    .hero-bubble {
+        transform: translateX(-8px) translateY(-6px) scale(1.4);
+    }
+    .hero-check-circle {
+        transform: translateX(60px) translateY(8px);
     }
 }
