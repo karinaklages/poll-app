@@ -1,27 +1,29 @@
 <section class="hero">
-    <a routerLink="/" class="hero-logo">
-        <img src="img/logo-orange.svg" alt="Poll App Logo" class="hero-logo-img">
-    </a>
-    <div class="hero-content">
-        <div class="hero-left">
-            <h1 class="hero-headline">Collect Feedback,<br>Unlock Ideas</h1>
-            <p class="hero-subhead">
-                Create and share surveys in minutes – from team events to workplace culture.
-                Collect opinions, engage your audience, and turn feedback into action.
-            </p>
-            <button class="hero-new-survey-btn" (click)="onSurveyClick()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
-                New survey
-                <div class="hero-new-survey-btn-plus">
-                    <img [src]="clicked ? 'img/button-check.svg' : 'img/button-plus.svg'" [class]="clicked ? 'button-check' : 'button-plus'" alt="">
+    <div class="hero-container">
+        <a routerLink="/" class="hero-logo">
+            <img src="img/logo-orange.svg" alt="Poll App Logo" class="hero-logo-img">
+        </a>
+        <div class="hero-content">
+            <div class="hero-left">
+                <h1 class="hero-headline">Collect Feedback,<br>Unlock Ideas</h1>
+                <p class="hero-subhead">
+                    Create and share surveys in minutes – from team events to workplace culture.
+                    Collect opinions, engage your audience, and turn feedback into action.
+                </p>
+                <button class="hero-new-survey-btn" (click)="onSurveyClick()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+                    New survey
+                    <div class="hero-new-survey-btn-plus">
+                        <img [src]="clicked ? 'img/button-check.svg' : 'img/button-plus.svg'" [class]="clicked ? 'button-check' : 'button-plus'" alt="">
+                    </div>
+                </button>
+            </div>
+            <div class="hero-right">
+                <div class="hero-illustration" aria-hidden="true">
+                    <img src="img/illustration-1.svg" alt="Illustration">
+                    <img src="img/illustration-2.svg" alt="Illustration">
+                    <img src="img/bubble.svg" class="hero-bubble" alt="">
+                    <img src="img/check.svg" class="hero-check-circle" alt="">
                 </div>
-            </button>
-        </div>
-        <div class="hero-right">
-            <div class="hero-illustration" aria-hidden="true">
-                <img src="img/illustration-1.svg" alt="Illustration">
-                <img src="img/illustration-2.svg" alt="Illustration">
-                <img src="img/bubble.svg" class="hero-bubble" alt="">
-                <img src="img/check.svg" class="hero-check-circle" alt="">
             </div>
         </div>
     </div>
