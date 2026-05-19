@@ -14,7 +14,22 @@
         Past survey
       </button>
     </div>
-    <button class="list-sort">Sort by categories ▾</button>
+    <!-- <button class="list-sort">Sort by categories ▾</button> -->
+    <div class="list-sort-wrapper">
+      <button class="list-sort" [class.list-sort--open]="sortOpen" (click)="toggleSort()">
+        Sort by categories
+        <img src="img/chevron-apricot.svg" class="list-sort-chevron" [class.list-sort-chevron--open]="sortOpen" alt="">
+      </button>
+      @if (sortOpen) {
+        <div class="list-sort-dropdown">
+          @for (cat of categories; track cat) {
+            <button class="list-sort-option" (click)="selectCategory(cat)">
+              {{ cat }}
+            </button>
+          }
+        </div>
+      }
+    </div>
   </div>
 
   <div class="list-grid">

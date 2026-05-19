@@ -45,16 +45,6 @@
     }
 }
 
-.list-sort {
-    background: transparent;
-    border: none;
-    color: var(--color-white);
-    font-family: var(--font-body);
-    font-size: 18px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
 .list-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -109,4 +99,79 @@
     font-size: 12px;
     font-weight: 500;
     border-radius: 0 16px 0 0;
+}
+
+.list-sort-wrapper {
+    position: relative;
+}
+
+.list-sort {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: transparent;
+    border: 2px solid transparent;
+    color: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-sm);
+    transition: border-color 0.15s ease;
+    width: 220px;
+    white-space: nowrap;
+
+    &:hover {
+        background: var(--color-purple-grey-light);
+    }
+
+    &--open {
+        border-color: transparent;
+        background: var(--color-purple-dark);
+    }
+}
+
+.list-sort-chevron {
+    color: var(--color-apricot-dark);
+    font-size: 14px;
+    transition: transform 0.2s ease;
+    width: 24px;
+
+    &--open {
+        transform: rotate(180deg);
+    }
+}
+
+.list-sort-dropdown {
+    position: absolute;
+    top: calc(100% + var(--space-xs));
+    right: 0;
+    background: var(--color-white);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm) 0;
+    min-width: 220px;
+    box-shadow: var(--shadow-card);
+    z-index: 10;
+    width: 220px;
+}
+
+.list-sort-option {
+    display: block;
+    width: 100%;
+    padding: var(--space-sm) var(--space-lg);
+    background: transparent;
+    border: none;
+    color: var(--color-purple-dark);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 400;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease;
+
+    &:hover {
+        background: var(--color-lilac-middle);
+        border-radius: var(--radius-sm);
+    }
 }

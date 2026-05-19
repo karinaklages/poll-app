@@ -17,17 +17,28 @@ interface Survey {
 })
 export class SurveyListAllComponent {
   activeTab: 'active' | 'past' = 'active';
+  sortOpen = false;
+  selectedCategory: string | null = null;
 
   surveys: Survey[] = [
     { id: '1', category: 'Team Activities', title: "Let's plan the next team event together", endsInDays: 1 },
-    { id: '2', category: 'Gaming', title: 'Gaming habits and favorite games', endsInDays: 3 },
-    { id: '3', category: 'Gaming', title: 'Gaming habits and favorite games', endsInDays: 3 },
-    { id: '4', category: 'Healthy Lifestyle', title: 'Healthier future: Fit and wellness survey', endsInDays: 2 },
-    { id: '5', category: 'Healthy Lifestyle', title: 'Healthier future: Fit and wellness survey', endsInDays: 2 },
+    { id: '2', category: 'Gaming & Entertainment', title: 'Gaming habits and favorite games', endsInDays: 3 },
+    { id: '3', category: 'Gaming & Entertainment', title: 'Gaming habits and favorite games', endsInDays: 3 },
+    { id: '4', category: 'Health & Wellness', title: 'Healthier future: Fit and wellness survey', endsInDays: 2 },
+    { id: '5', category: 'Health & Wellness', title: 'Healthier future: Fit and wellness survey', endsInDays: 2 },
     { id: '6', category: 'Team Activities', title: "Let's plan the next team event together", endsInDays: 1 },
   ];
 
-  setTab(tab: 'active' | 'past') {
-    this.activeTab = tab;
-  }
+  categories = [
+    'Team Activities',
+    'Health & Wellness',
+    'Gaming & Entertainment',
+    'Education & Learning',
+    'Lifestyle & Preferences',
+    'Technology & Innovation',
+  ];
+
+  setTab(tab: 'active' | 'past') { this.activeTab = tab; }
+  toggleSort() { this.sortOpen = !this.sortOpen; }
+  selectCategory(cat: string) { this.selectedCategory = cat; this.sortOpen = false; }
 }
