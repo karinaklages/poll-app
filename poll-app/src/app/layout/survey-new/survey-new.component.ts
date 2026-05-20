@@ -79,4 +79,8 @@ export class SurveyNewComponent {
         console.log('Publish', { surveyName: this.surveyName, questions: this.questions });
         this.close();
     }
+
+    get isOddQuestions(): boolean {
+        return this.questions.length % 2 !== 0;
+    }
 }

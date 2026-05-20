@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 interface Survey {
@@ -19,6 +19,8 @@ export class SurveyListAllComponent {
   activeTab: 'active' | 'past' = 'active';
   sortOpen = false;
   selectedCategory: string | null = null;
+
+  constructor(private elementRef: ElementRef) {}
 
   surveys: Survey[] = [
     { id: '1', category: 'Team Activities', title: "Let's plan the next team event together", endsInDays: 1 },
@@ -41,4 +43,13 @@ export class SurveyListAllComponent {
   setTab(tab: 'active' | 'past') { this.activeTab = tab; }
   toggleSort() { this.sortOpen = !this.sortOpen; }
   selectCategory(cat: string) { this.selectedCategory = cat; this.sortOpen = false; }
+  
+  @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent) {
+      const clickedInside = this.elementRef.nativeElement.contains(event.target);
+
+      if (!clickedInside) {
+        this.sortOpen = false;
+      }
+    }
 }
