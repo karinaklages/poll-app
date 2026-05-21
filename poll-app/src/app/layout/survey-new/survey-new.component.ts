@@ -66,13 +66,17 @@ export class SurveyNewComponent {
     }
 
     addAnswer(question: Question) {
+        if (question.answers.length >= 6) return;
         const letters = 'abcdefghijklmnopqrstuvwxyz';
         const id = letters[question.answers.length] || Date.now().toString();
         question.answers.push({ id, value: '' });
     }
 
     removeAnswer(question: Question, answerId: string) {
-        question.answers = question.answers.filter(a => a.id !== answerId);
+        const letters = 'abcdefghijklmnopqrstuvwxyz';
+        question.answers = question.answers
+            .filter(a => a.id !== answerId)
+            .map((a, i) => ({ ...a, id: letters[i] }));
     }
 
     get isOddQuestions(): boolean {
@@ -98,4 +102,6 @@ export class SurveyNewComponent {
     clearSurveyName() { this.surveyName = ''; }
     clearEndDate() { this.endDate = ''; }
     clearDescribingText() { this.describingText = ''; }
+
+    readonly maxLength = 60;
 }

@@ -19,7 +19,7 @@
                     <div class="form-field">
                         <label>Survey name</label>
                         <div class="input-row">
-                            <input type="text" [(ngModel)]="surveyName">
+                            <input type="text" [(ngModel)]="surveyName" [maxlength]="maxLength">
                             <button class="icon-btn" (click)="clearSurveyName()">
                                 <img src="img/delete-white.svg" alt="">
                                 <img src="img/delete-hover.svg" class="icon-hover" alt="">
@@ -58,7 +58,7 @@
                     <div class="form-field">
                         <label>Describing text <span class="optional">(optional)</span></label>
                         <div class="input-row">
-                            <textarea [(ngModel)]="describingText" rows="4"></textarea>
+                            <textarea [(ngModel)]="describingText" rows="4" [maxlength]="maxLength"></textarea>
                             <button class="icon-btn" (click)="clearDescribingText()">
                                 <img src="img/delete-white.svg" alt="">
                                 <img src="img/delete-hover.svg" class="icon-hover" alt="">
@@ -81,7 +81,7 @@
                                 <img src="img/delete-hover.svg" class="icon-hover" alt="">
                             </button>
                         </div>
-                        <input type="text" class="question-input" [(ngModel)]="question.text" placeholder="What would you like to ask?">
+                        <input type="text" class="question-input" [(ngModel)]="question.text" [maxlength]="maxLength" placeholder="What would you like to ask?">
                         <div class="answers-header">
                             <span class="answers-label">Answers</span>
                             <label class="multiple-label">
@@ -97,7 +97,7 @@
                         @for (answer of question.answers; track answer.id) {
                             <div class="answer-row">
                                 <span class="answer-letter">{{ answer.id.toUpperCase() }}.</span>
-                                <input type="text" [(ngModel)]="answer.value">
+                                <input type="text" [(ngModel)]="answer.value" [maxlength]="maxLength">
                                 <button class="icon-btn" (click)="removeAnswer(question, answer.id)">
                                     <img src="img/delete-white.svg" alt="">
                                     <img src="img/delete-hover.svg" class="icon-hover" alt="">
@@ -105,10 +105,12 @@
                             </div>
                         }
                         <div class="add-answer-btn-row">
-                            <button class="add-answer-btn" (click)="addAnswer(question)">
+                            <button class="add-answer-btn" (click)="addAnswer(question)" [disabled]="question.answers.length >= 6" [class.add-answer-btn--disabled]="question.answers.length >= 6">
                                 Add answer <img src="img/button-plus-white.svg" alt="">
                             </button>
-                            <span class="add-answer-info">You can add up to 6 answer fields.</span>
+                            <span class="add-answer-info" [class.invisible]="question.answers.length >= 6">
+                                You can add up to 6 answer fields.
+                            </span>
                         </div>
                     </div>
                 }

@@ -479,6 +479,16 @@
     font-size: 13px;
 }
 
+.add-answer-btn--disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
 // Footer
 .dialog-footer {
     display: flex;
