@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -75,12 +75,23 @@ export class SurveyNewComponent {
         question.answers = question.answers.filter(a => a.id !== answerId);
     }
 
-    publish() {
-        console.log('Publish', { surveyName: this.surveyName, questions: this.questions });
-        this.close();
-    }
-
     get isOddQuestions(): boolean {
         return this.questions.length % 2 !== 0;
+    }
+
+    hovered = false;
+
+    onMouseEnter() { this.hovered = true; }
+    onMouseLeave() { this.hovered = false; }
+
+    published = false;
+
+    publish() {
+        console.log('Publish', { surveyName: this.surveyName, questions: this.questions });
+        this.published = true;
+    }
+
+    closePublished() {
+        this.published = false;
     }
 }

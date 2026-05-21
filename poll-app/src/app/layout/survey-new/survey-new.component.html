@@ -98,9 +98,12 @@
                                 </button>
                             </div>
                         }
-                        <button class="add-answer-btn" (click)="addAnswer(question)">
-                            Add answer <img src="img/button-plus-white.svg" alt="">
-                        </button>
+                        <div class="add-answer-btn-row">
+                            <button class="add-answer-btn" (click)="addAnswer(question)">
+                                Add answer <img src="img/button-plus-white.svg" alt="">
+                            </button>
+                            <span class="add-answer-info">You can add up to 6 answer fields.</span>
+                        </div>
                     </div>
                 }
 
@@ -116,8 +119,22 @@
 
             <!-- Footer -->
             <div class="dialog-footer">
-                <button class="publish-btn" (click)="publish()">Publish</button>
+                <!-- <button class="publish-btn" (click)="publish()">Publish</button> -->
+                <button class="publish-btn" (click)="publish()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+                    Publish
+                    <div class="publish-btn-plus">
+                        <img class="icon-check" src="img/button-check.svg" alt="">
+                    </div>
+                </button>
             </div>
+    
+            <!-- Published Toast -->
+            @if (published) {
+                <div class="published-toast">
+                    <span>Your survey is now published.</span>
+                    <button class="published-toast-close" (click)="closePublished()"><strong>✕</strong></button>
+                </div>
+            }
         </div>
     </div>
 }

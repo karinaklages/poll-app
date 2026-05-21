@@ -26,6 +26,7 @@
     gap: var(--space-xl);
 }
 
+// Left area
 .hero-left {
     max-width: 680px;
     display: flex;
@@ -99,6 +100,7 @@
     }
 }
 
+// Right area
 .hero-right {
     flex-shrink: 0;
 }
