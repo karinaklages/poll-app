@@ -367,11 +367,42 @@
 .multiple-label {
     display: flex;
     align-items: center;
-    gap: var(--space-xs);
-    font-family: var(--font-body);
-    font-size: 13px;
-    color: var(--color-white);
+    gap: var(--space-sm);
     cursor: pointer;
+
+    .checkbox-hidden {
+        display: none;
+    }
+
+    .custom-checkbox {
+        position: relative;
+        width: 20px;
+        height: 20px;
+        display: flex;
+
+        img {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            transition: opacity 0.15s ease;
+        }
+
+        .cb-default  { opacity: 1; }
+        .cb-hover    { opacity: 0; }
+        .cb-checked  { opacity: 0; }
+    }
+
+    &:hover .custom-checkbox {
+        .cb-default { opacity: 0; }
+        .cb-hover   { opacity: 1; }
+        .cb-checked { opacity: 0; }
+    }
+
+    input:checked ~ .custom-checkbox {
+        .cb-default { opacity: 0; }
+        .cb-hover   { opacity: 0; }
+        .cb-checked { opacity: 1; }
+    }
 }
 
 .answer-row {

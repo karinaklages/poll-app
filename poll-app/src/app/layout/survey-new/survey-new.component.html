@@ -85,7 +85,13 @@
                         <div class="answers-header">
                             <span class="answers-label">Answers</span>
                             <label class="multiple-label">
-                                <input type="checkbox" [(ngModel)]="question.allowMultiple">Allow multiple answers.
+                                <input type="checkbox" [(ngModel)]="question.allowMultiple" class="checkbox-hidden">
+                                <span class="custom-checkbox">
+                                    <img class="cb-default" src="img/checkbox-default-white.svg" alt="">
+                                    <img class="cb-hover"   src="img/checkbox-hover-white.svg" alt="">
+                                    <img class="cb-checked" src="img/checkbox-checked.svg" alt="">
+                                </span>
+                                Allow multiple answers.
                             </label>
                         </div>
                         @for (answer of question.answers; track answer.id) {
