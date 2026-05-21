@@ -39,7 +39,7 @@
                         </div>
                         <div class="category-wrapper">
                             <button class="category-btn" (click)="toggleCategory()">
-                                {{ selectedCategory ?? 'Choose category' }}
+                                <span class="category-btn-text">{{ selectedCategory ?? 'Choose category' }}</span>
                                 <img src="img/chevron-apricot.svg" class="category-btn-chevron" [class.category-btn-chevron--open]="categoryOpen" alt="">
                             </button>
                             @if (categoryOpen) {
@@ -49,6 +49,7 @@
                                 }
                                 </div>
                             }
+                            <span class="category-label-spacer">&nbsp;</span>
                         </div>
                     </div>
                 </div>
@@ -80,7 +81,7 @@
                                 <img src="img/delete-hover.svg" class="icon-hover" alt="">
                             </button>
                         </div>
-                        <input type="text" class="question-input" [(ngModel)]="question.text" placeholder="Which date would work best for you?">
+                        <input type="text" class="question-input" [(ngModel)]="question.text" placeholder="What would you like to ask?">
                         <div class="answers-header">
                             <span class="answers-label">Answers</span>
                             <label class="multiple-label">
