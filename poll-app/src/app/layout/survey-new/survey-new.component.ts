@@ -22,14 +22,8 @@ interface Question {
     styleUrl: './survey-new.component.scss'
 })
 export class SurveyNewComponent {
-    isOpen = false;
-    surveyName = '';
-    describingText = '';
-    endDate = '';
-    selectedCategory: string | null = null;
-    categoryOpen = false;
-
-    categories = [
+    readonly maxLength = 60;
+    readonly categories = [
         'Team Activities',
         'Health & Wellness',
         'Gaming & Entertainment',
@@ -38,14 +32,27 @@ export class SurveyNewComponent {
         'Technology & Innovation',
     ];
 
+    isOpen = false;
+    surveyName = '';
+    describingText = '';
+    endDate = '';
+    selectedCategory: string | null = null;
+    categoryOpen = false;
+    hovered = false;
+    published = false;
+
     questions: Question[] = [
         { id: '1', text: '', allowMultiple: false, answers: [
-        { id: 'a', value: '' },
-        { id: 'b', value: '' },
+            { id: 'a', value: '' },
+            { id: 'b', value: '' },
         ]}
     ];
 
-    open() { this.isOpen = true; }
+    get isOddQuestions(): boolean {
+        return this.questions.length % 2 !== 0;
+    }
+
+    open()  { this.isOpen = true; }
     close() { this.isOpen = false; }
 
     toggleCategory() { this.categoryOpen = !this.categoryOpen; }
@@ -54,10 +61,10 @@ export class SurveyNewComponent {
     addQuestion() {
         const id = Date.now().toString();
         this.questions.push({
-        id,
-        text: '',
-        allowMultiple: false,
-        answers: [{ id: 'a', value: '' }, { id: 'b', value: '' }]
+            id,
+            text: '',
+            allowMultiple: false,
+            answers: [{ id: 'a', value: '' }, { id: 'b', value: '' }]
         });
     }
 
@@ -79,29 +86,17 @@ export class SurveyNewComponent {
             .map((a, i) => ({ ...a, id: letters[i] }));
     }
 
-    get isOddQuestions(): boolean {
-        return this.questions.length % 2 !== 0;
-    }
-
-    hovered = false;
-
-    onMouseEnter() { this.hovered = true; }
-    onMouseLeave() { this.hovered = false; }
-
-    published = false;
+    clearSurveyName() { this.surveyName = ''; }
+    clearEndDate() { this.endDate = ''; }
+    clearDescribingText() { this.describingText = ''; }
 
     publish() {
         console.log('Publish', { surveyName: this.surveyName, questions: this.questions });
         this.published = true;
     }
 
-    closePublished() {
-        this.published = false;
-    }
+    closePublished() { this.published = false; }
 
-    clearSurveyName() { this.surveyName = ''; }
-    clearEndDate() { this.endDate = ''; }
-    clearDescribingText() { this.describingText = ''; }
-
-    readonly maxLength = 60;
+    onMouseEnter() { this.hovered = true; }
+    onMouseLeave() { this.hovered = false; }
 }
