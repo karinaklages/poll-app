@@ -20,7 +20,7 @@
                         <label>Survey name</label>
                         <div class="input-row">
                             <input type="text" [(ngModel)]="surveyName">
-                            <button class="icon-btn">
+                            <button class="icon-btn" (click)="clearSurveyName()">
                                 <img src="img/delete-white.svg" alt="">
                                 <img src="img/delete-hover.svg" class="icon-hover" alt="">
                             </button>
@@ -31,7 +31,7 @@
                             <label>Set end date <span class="optional">(optional)</span></label>
                             <div class="input-row">
                                 <input type="date" [(ngModel)]="endDate">
-                                <button class="icon-btn">
+                                <button class="icon-btn" (click)="clearEndDate()">
                                     <img src="img/delete-white.svg" alt="">
                                     <img src="img/delete-hover.svg" class="icon-hover" alt="">
                                 </button>
@@ -59,7 +59,7 @@
                         <label>Describing text <span class="optional">(optional)</span></label>
                         <div class="input-row">
                             <textarea [(ngModel)]="describingText" rows="4"></textarea>
-                            <button class="icon-btn">
+                            <button class="icon-btn" (click)="clearDescribingText()">
                                 <img src="img/delete-white.svg" alt="">
                                 <img src="img/delete-hover.svg" class="icon-hover" alt="">
                             </button>

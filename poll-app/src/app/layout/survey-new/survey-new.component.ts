@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -94,4 +94,8 @@ export class SurveyNewComponent {
     closePublished() {
         this.published = false;
     }
+
+    clearSurveyName() { this.surveyName = ''; }
+    clearEndDate() { this.endDate = ''; }
+    clearDescribingText() { this.describingText = ''; }
 }
