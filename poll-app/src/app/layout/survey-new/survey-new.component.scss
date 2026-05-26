@@ -34,6 +34,10 @@
         background: var(--color-apricot-dark);
         border-radius: 999px;
     }
+
+    form {
+        display: contents;
+    }
 }
 
 // Header
@@ -283,6 +287,12 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
+
+    [formArrayName="answers"] {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
 }
 
 .question-header {
@@ -567,4 +577,15 @@
         margin-top: 6px;
         margin-right: 16px;
     }
+}
+
+.field-error {
+    color: var(--color-orange);
+    font-size: 13px;
+    font-family: var(--font-body);
+    margin-top: 2px;
+}
+
+.category-wrapper > .field-error {
+    margin-left: var(--space-lg);
 }

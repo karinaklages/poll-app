@@ -1,27 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormControl, Validators, AbstractControl } from '@angular/forms';
 
-interface Answer {
-    id: string;
-    value: string;
+function minAnswers(min: number) {
+    return (control: AbstractControl) => {
+        const arr = control as FormArray;
+        const filled = arr.controls.filter(c => c.get('value')?.value?.trim());
+        return filled.length >= min ? null : { minAnswers: { required: min, actual: filled.length } };
+    };
 }
 
-interface Question {
-    id: string;
-    text: string;
-    allowMultiple: boolean;
-    answers: Answer[];
+function minQuestions(control: AbstractControl) {
+    const arr = control as FormArray;
+    return arr.length >= 1 ? null : { minQuestions: true };
 }
 
 @Component({
     selector: 'app-survey-new',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './survey-new.component.html',
     styleUrl: './survey-new.component.scss'
 })
-export class SurveyNewComponent {
+export class SurveyNewComponent implements OnInit {
     readonly maxLength = 60;
     readonly categories = [
         'Team Activities',
@@ -31,72 +32,145 @@ export class SurveyNewComponent {
         'Lifestyle & Preferences',
         'Technology & Innovation',
     ];
+    readonly letters = 'abcdefghijklmnopqrstuvwxyz';
 
     isOpen = false;
-    surveyName = '';
-    describingText = '';
-    endDate = '';
-    selectedCategory: string | null = null;
     categoryOpen = false;
-    hovered = false;
     published = false;
+    hovered = false;
 
-    questions: Question[] = [
-        { id: '1', text: '', allowMultiple: false, answers: [
-            { id: 'a', value: '' },
-            { id: 'b', value: '' },
-        ]}
-    ];
+    form!: FormGroup;
 
-    get isOddQuestions(): boolean {
-        return this.questions.length % 2 !== 0;
-    }
+    constructor(private fb: FormBuilder) {}
 
-    open()  { this.isOpen = true; }
-    close() { this.isOpen = false; }
-
-    toggleCategory() { this.categoryOpen = !this.categoryOpen; }
-    selectCategory(cat: string) { this.selectedCategory = cat; this.categoryOpen = false; }
-
-    addQuestion() {
-        const id = Date.now().toString();
-        this.questions.push({
-            id,
-            text: '',
-            allowMultiple: false,
-            answers: [{ id: 'a', value: '' }, { id: 'b', value: '' }]
+    ngOnInit() {
+        this.form = this.fb.group({
+            surveyName: ['', [Validators.required, Validators.maxLength(this.maxLength)]],
+            describingText: ['', Validators.maxLength(this.maxLength)],
+            endDate: [null],
+            selectedCategory: [null, Validators.required],
+            questions: this.fb.array([this.createQuestion()], minQuestions)
         });
     }
 
-    removeQuestion(qId: string) {
-        this.questions = this.questions.filter(q => q.id !== qId);
+    // Helpers
+    createQuestion(): FormGroup {
+        return this.fb.group({
+            text: ['', [Validators.required, Validators.maxLength(this.maxLength)]],
+            allowMultiple: [false],
+            answers: this.fb.array(
+            [this.createAnswer('a'), this.createAnswer('b')],
+            minAnswers(2)
+            )
+        });
     }
 
-    addAnswer(question: Question) {
-        if (question.answers.length >= 6) return;
-        const letters = 'abcdefghijklmnopqrstuvwxyz';
-        const id = letters[question.answers.length] || Date.now().toString();
-        question.answers.push({ id, value: '' });
+    createAnswer(letter: string): FormGroup {
+        return this.fb.group({
+            letter: [letter],
+            value: ['', Validators.maxLength(this.maxLength)]
+        });
     }
 
-    removeAnswer(question: Question, answerId: string) {
-        const letters = 'abcdefghijklmnopqrstuvwxyz';
-        question.answers = question.answers
-            .filter(a => a.id !== answerId)
-            .map((a, i) => ({ ...a, id: letters[i] }));
+    // Typed Accessors
+    get questionsArray(): FormArray {
+        return this.form.get('questions') as FormArray;
     }
 
-    clearSurveyName() { this.surveyName = ''; }
-    clearEndDate() { this.endDate = ''; }
-    clearDescribingText() { this.describingText = ''; }
+    questionGroup(i: number): FormGroup {
+        return this.questionsArray.at(i) as FormGroup;
+    }
 
+    answersArray(questionIndex: number): FormArray {
+        return this.questionGroup(questionIndex).get('answers') as FormArray;
+    }
+
+    answerGroup(questionIndex: number, answerIndex: number): FormGroup {
+        return this.answersArray(questionIndex).at(answerIndex) as FormGroup;
+    }
+
+    get isOddQuestions(): boolean {
+        return this.questionsArray.length % 2 !== 0;
+    }
+
+    // Dialog
+    open() { this.isOpen = true; }
+    close() { this.isOpen = false; }
+
+    // Category
+    toggleCategory() { this.categoryOpen = !this.categoryOpen; }
+
+    selectCategory(cat: string) {
+        this.form.get('selectedCategory')!.setValue(cat);
+        this.categoryOpen = false;
+    }
+
+    get selectedCategory(): string | null {
+        return this.form?.get('selectedCategory')?.value ?? null;
+    }
+
+    // Clear Helpers
+    clearField(fieldName: string) {
+        this.form.get(fieldName)!.setValue('');
+    }
+
+    // Questions
+    addQuestion() {
+        this.questionsArray.push(this.createQuestion());
+    }
+
+    removeQuestion(index: number) {
+        this.questionsArray.removeAt(index);
+    }
+
+    // Answers
+    addAnswer(questionIndex: number) {
+        const arr = this.answersArray(questionIndex);
+        if (arr.length >= 6) return;
+        arr.push(this.createAnswer(this.letters[arr.length]));
+    }
+
+    removeAnswer(questionIndex: number, answerIndex: number) {
+        const arr = this.answersArray(questionIndex);
+        arr.removeAt(answerIndex);
+        arr.controls.forEach((ctrl, i) => ctrl.get('letter')!.setValue(this.letters[i]));
+    }
+
+    // Publish
     publish() {
-        console.log('Publish', { surveyName: this.surveyName, questions: this.questions });
+        if (this.form.invalid) {
+            this.form.markAllAsTouched();
+            return;
+        }
+
+        // Payload – Supabase
+        const payload = this.buildPayload();
+        console.log('Payload for Supabase:', payload);
+
+        // TODO: await this.supabaseService.insertSurvey(payload);
         this.published = true;
     }
 
-    closePublished() { this.published = false; }
+    private buildPayload() {
+        const raw = this.form.getRawValue();
+        return {
+            name: raw.surveyName,
+            description: raw.describingText || null,
+            end_date: raw.endDate || null,
+            category: raw.selectedCategory,
+            questions: raw.questions.map((q: any, qi: number) => ({
+                order: qi + 1,
+                text: q.text,
+                allow_multiple: q.allowMultiple,
+                answers: q.answers.map((a: any) => ({
+                letter: a.letter,
+                value: a.value
+                }))
+            }))
+        };
+    }
 
+    closePublished() { this.published = false; }
     onMouseEnter() { this.hovered = true; }
     onMouseLeave() { this.hovered = false; }
 }
