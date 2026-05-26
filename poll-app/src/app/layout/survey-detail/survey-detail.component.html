@@ -1,0 +1,234 @@
+<div class="sd-nav">
+    <div class="sd-nav-inner">
+        <a routerLink="/" class="sd-nav-logo">
+            <img src="img/logo-darkpurple.svg" alt="Poll App Logo" class="hero-logo-img">
+        </a>
+        <button class="sd-nav-btn">Create survey</button>
+    </div>
+</div>
+
+<div class="sd-page">
+    @if (isOpen) {
+        <div class="sd-card">
+
+            <!-- Header / Card -->
+            <div class="sd-header">
+                <div class="sd-status-row">
+                    <span class="sd-badge">Published</span>
+                    <span class="sd-meta">Ends on 01.09.2025</span>
+                    <span class="sd-meta sd-meta--right">Category: Team Activities</span>
+                </div>
+                <h1 class="sd-title">Let's plan the next team event together</h1>
+                <p class="sd-description">
+                    We want to create team activities that everyone will enjoy – share your preferences
+                    and ideas in our survey to help us plan better experiences together.
+                </p>
+            </div>
+
+            <!-- Fragen: 2-Spalten-Grid -->
+            <div class="sd-questions-grid">
+
+                <!-- Question 1 -->
+                <div class="sq-block">
+                    <div class="sq-header">
+                        <span class="sq-number">1.</span>
+                        <div class="sq-header-text">
+                            <span class="sq-title">Which date would work best for you?</span>
+                            <span class="sq-hint">More than one answers are possible.</span>
+                        </div>
+                    </div>
+                    <div class="sq-answers">
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">A.</span>
+                            <span class="sq-answer-text">19.09.2025, Friday</span>
+                        </label>
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">B.</span>
+                            <span class="sq-answer-text">10.10.2025, Friday</span>
+                        </label>
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">C.</span>
+                            <span class="sq-answer-text">11.10.2025, Saturday</span>
+                        </label>
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">D.</span>
+                            <span class="sq-answer-text">31.10.2025, Friday</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="sq-block">
+                    <div class="sq-header">
+                        <span class="sq-number">2.</span>
+                        <div class="sq-header-text">
+                            <span class="sq-title">Choose the activities you prefer</span>
+                            <span class="sq-hint">More than one answers are possible.</span>
+                        </div>
+                    </div>
+                    <div class="sq-answers">
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">A.</span>
+                            <span class="sq-answer-text">Outdoor adventure kayaking</span>
+                        </label>
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">B.</span>
+                            <span class="sq-answer-text">Office Costume Party</span>
+                        </label>
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">C.</span>
+                            <span class="sq-answer-text">Bowling, mini-golf, volleyball</span>
+                        </label>
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">D.</span>
+                            <span class="sq-answer-text">Beach party, Music & cocktails</span>
+                        </label>
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">E.</span>
+                            <span class="sq-answer-text">Escape room</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="sq-block">
+                    <div class="sq-header">
+                        <span class="sq-number">3.</span>
+                        <div class="sq-header-text">
+                            <span class="sq-title">What's most important to you in a team event?</span>
+                        </div>
+                    </div>
+                    <div class="sq-answers">
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">A.</span>
+                            <span class="sq-answer-text">Team bonding</span>
+                        </label>
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">B.</span>
+                            <span class="sq-answer-text">Food and drinks</span>
+                        </label>
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">C.</span>
+                            <span class="sq-answer-text">Trying something new</span>
+                        </label>
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">D.</span>
+                            <span class="sq-answer-text">Keeping it stress-free</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="sq-block">
+                    <div class="sq-header">
+                        <span class="sq-number">4.</span>
+                        <div class="sq-header-text">
+                            <span class="sq-title">How long would you prefer the event to last?</span>
+                        </div>
+                    </div>
+                    <div class="sq-answers">
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">A.</span>
+                            <span class="sq-answer-text">Half a day</span>
+                        </label>
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">B.</span>
+                            <span class="sq-answer-text">Full day</span>
+                        </label>
+                        <label class="sq-answer">
+                            <input type="checkbox" class="sq-checkbox-hidden">
+                            <span class="sq-custom-checkbox"></span>
+                            <span class="sq-answer-letter">C.</span>
+                            <span class="sq-answer-text">Evening only</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complete Button -->
+            <div class="sd-footer">
+                <button class="complete-btn" (click)="completeSurvey()">Complete survey</button>
+            </div>
+        </div>
+
+        <!-- Right: Results -->
+        <div class="sd-results">
+
+            <div class="sd-results-header">
+                <h2 class="sd-results-title">Survey results <span class="sd-results-live">LIVE</span></h2>
+            </div>
+
+            @if (!hasResults) {
+                <div class="sd-results-empty">
+                    <p class="sd-results-empty-text">Results will be shown here after participants complete the survey.<br><br>There are no answers yet.</p>
+                </div>
+
+            } @else {
+                <div class="sd-results-list">
+
+                    <!-- Question 1 -->
+                    <div class="sr-block">
+                        <p class="sr-question">1. Which date would work best for you?</p>
+                        <div class="sr-bars">
+                            @for (bar of results[0].answers; track bar.letter) {
+                                <div class="sr-bar-row">
+                                    <span class="sr-bar-letter">{{ bar.letter }}</span>
+                                    <div class="sr-bar-track">
+                                        <div class="sr-bar-fill" [style.width.%]="bar.percent"></div>
+                                    </div>
+                                    <span class="sr-bar-percent">{{ bar.percent }}%</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <!-- Question 2 -->
+                    <div class="sr-block">
+                        <p class="sr-question">1. Which date would work best for you?</p>
+                        <div class="sr-bars">
+                            @for (bar of results[0].answers; track bar.letter) {
+                                <div class="sr-bar-row">
+                                    <span class="sr-bar-letter">{{ bar.letter }}</span>
+                                    <div class="sr-bar-track">
+                                        <div class="sr-bar-fill" [style.width.%]="bar.percent"></div>
+                                    </div>
+                                    <span class="sr-bar-percent">{{ bar.percent }}%</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div>
+    }
+</div>
