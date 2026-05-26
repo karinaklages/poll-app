@@ -23,6 +23,8 @@ export class SurveyDetailComponent {
 
     isOpen = true;
     hasResults = true;
+    clicked = false;
+    hovered = false;
 
     results: QuestionResult[] = [
         {
@@ -41,5 +43,12 @@ export class SurveyDetailComponent {
 
     completeSurvey() {
         console.log('Survey completed');
+    }
+
+    onMouseEnter() { this.hovered = true; }
+    onMouseLeave() { this.hovered = false; this.clicked = false; }
+
+    onNavBtnClick() {
+        this.clicked = true;
     }
 }

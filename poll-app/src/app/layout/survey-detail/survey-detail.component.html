@@ -3,7 +3,13 @@
         <a routerLink="/" class="sd-nav-logo">
             <img src="img/logo-darkpurple.svg" alt="Poll App Logo" class="hero-logo-img">
         </a>
-        <button class="sd-nav-btn">Create survey</button>
+        <button class="sd-nav-btn"
+            (click)="onNavBtnClick()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+            Create survey
+            <div class="sd-nav-btn-plus">
+                <img [src]="clicked ? 'img/button-check.svg' : 'img/button-plus.svg'" [class]="clicked ? 'icon-check' : 'icon-plus'" alt="">
+            </div>
+        </button>
     </div>
 </div>
 
