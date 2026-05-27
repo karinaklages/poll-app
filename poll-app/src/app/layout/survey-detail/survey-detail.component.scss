@@ -207,6 +207,11 @@
     gap: var(--space-sm);
     cursor: pointer;
     padding: var(--space-xs) 0;
+
+    &:hover {
+        background-color: var(--color-apricot-light);
+        border-radius: 4px;
+    }
 }
 
 .sq-checkbox-hidden {
@@ -216,36 +221,27 @@
 .sq-custom-checkbox {
     width: 18px;
     height: 18px;
-    border: 2px solid var(--color-purple-dark);
-    border-radius: 3px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-white, #fff);
-    transition: background 0.15s ease, border-color 0.15s ease;
 
-    &::after {
-        content: '';
-        width: 10px;
-        height: 10px;
-        background: var(--color-apricot-light);
-        border-radius: 1px;
-        opacity: 0;
-        transition: opacity 0.15s ease;
+    img.checkbox-default {
+        display: block;
+    }
+
+    img.checkbox-checked {
+        display: none;
     }
 }
 
-.sq-answer:hover .sq-custom-checkbox {
-    border-color: var(--color-apricot-dark);
-}
-
 .sq-checkbox-hidden:checked ~ .sq-custom-checkbox {
-    background: var(--color-apricot-light);
-    border-color: var(--color-apricot-dark);
+    img.checkbox-default {
+        display: none;
+    }
 
-    &::after {
-        opacity: 1;
+    img.checkbox-checked {
+        display: block;
     }
 }
 
