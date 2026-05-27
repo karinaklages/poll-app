@@ -5,7 +5,7 @@
             <h3 class="featured-label">Ending soon surveys</h3>
             <div class="featured-grid">
             @for (survey of featuredSurveys; track survey.id) {
-                <div class="featured-card">
+                <div class="featured-card" (click)="openSurvey(survey.id)">
                 <div class="featured-card-top">
                     <span class="featured-card-category">{{ survey.category }}</span>
                     <h4 class="featured-card-title">{{ survey.title }}</h4>

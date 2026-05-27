@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 
 interface BarAnswer {
     letter: string;
@@ -19,7 +19,9 @@ interface QuestionResult {
     templateUrl: './survey-detail.component.html',
     styleUrl: './survey-detail.component.scss'
 })
-export class SurveyDetailComponent {
+export class SurveyDetailComponent implements OnInit {
+
+    surveyId!: string;
 
     isOpen = true;
     hasResults = true;
@@ -37,6 +39,14 @@ export class SurveyDetailComponent {
             ]
         }
     ];
+
+    constructor(private route: ActivatedRoute) {}
+
+    ngOnInit(): void {
+        this.surveyId = this.route.snapshot.paramMap.get('id')!;
+        // Later: Supabase Call 
+        console.log('Survey ID:', this.surveyId);
+    }
 
     open() { this.isOpen = true; }
     close() { this.isOpen = false; }

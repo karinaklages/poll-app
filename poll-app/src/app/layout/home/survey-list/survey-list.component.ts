@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { SurveyListAllComponent } from '../survey-list-all/survey-list-all.component';
 
 interface Survey {
@@ -22,4 +23,10 @@ export class SurveyListComponent {
         { id: '2', category: 'Health & Wellness', title: 'Fit and wellness survey', endsInDays: 2 },
         { id: '3', category: 'Gaming & Entertainment', title: 'Gaming habits and favorite games', endsInDays: 3 },
     ];
+
+    constructor(private router: Router) {}
+
+    openSurvey(id: string): void {
+        this.router.navigate(['/survey', id]);
+    }
 }
