@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators, AbstractControl } from '@angular/forms';
 
 function minAnswers(min: number) {
     return (control: AbstractControl) => {
@@ -47,7 +47,7 @@ export class SurveyNewComponent implements OnInit {
         this.form = this.fb.group({
             surveyName: ['', [Validators.required, Validators.maxLength(this.maxLength)]],
             describingText: ['', Validators.maxLength(this.maxLength)],
-            endDate: [null],
+            endDate: [null, Validators.required],
             selectedCategory: [null, Validators.required],
             questions: this.fb.array([this.createQuestion()], minQuestions)
         });
@@ -149,6 +149,10 @@ export class SurveyNewComponent implements OnInit {
 
         // TODO: await this.supabaseService.insertSurvey(payload);
         this.published = true;
+
+        this.form.reset();
+        this.questionsArray.clear();
+        this.questionsArray.push(this.createQuestion());
     }
 
     private buildPayload() {

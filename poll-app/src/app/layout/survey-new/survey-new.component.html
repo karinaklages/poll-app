@@ -32,7 +32,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-field">
-                                <label>Set end date <span class="optional">(optional)</span></label>
+                                <label>Set end date</label>
                                 <div class="input-row">
                                     <input type="date" formControlName="endDate">
                                     <button type="button" class="icon-btn" (click)="clearField('endDate')">
@@ -40,6 +40,9 @@
                                         <img src="img/delete-hover.svg" class="icon-hover" alt="">
                                     </button>
                                 </div>
+                                @if (form.get('endDate')?.invalid && form.get('endDate')?.touched) {
+                                    <span class="field-error">End date is required.</span>
+                                }
                             </div>
                             <div class="category-wrapper">
                                 <button type="button" class="category-btn" (click)="toggleCategory()">
