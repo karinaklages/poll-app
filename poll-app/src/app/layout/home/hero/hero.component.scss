@@ -1,3 +1,5 @@
+@use 'hero.component.mobile';
+
 .hero {
     display: flex;
     flex-direction: column;
@@ -21,6 +23,7 @@
 
 .hero-content {
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-xl);
@@ -28,6 +31,7 @@
 
 // Left area
 .hero-left {
+    order: 1;
     max-width: 680px;
     display: flex;
     flex-direction: column;
@@ -102,6 +106,7 @@
 
 // Right area
 .hero-right {
+    order: 2;
     flex-shrink: 0;
 }
 
@@ -150,5 +155,15 @@
     }
     .hero-check-circle {
         transform: translateX(60px) translateY(8px);
+    }
+}
+
+.hero-illustration-mobile {
+    display: none;
+}
+
+@media (max-width: 1170px) {
+    .hero-right {
+        display: none !important;
     }
 }
