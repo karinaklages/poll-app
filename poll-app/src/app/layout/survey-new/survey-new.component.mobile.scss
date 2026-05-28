@@ -1,0 +1,119 @@
+@media (max-width: 970px) {
+
+    .dialog {
+        width: 100% !important;
+        max-width: 600px !important;
+        max-height: 100vh;
+        border-radius: 0 40px 0 0;
+        padding: var(--space-xl) !important;
+    }
+
+    .dialog-header {
+        align-items: center;
+    }
+
+    .dialog-title {
+        font-size: 36px;
+        line-height: 0.8;
+        margin-top: 14px;
+    }
+
+    .dialog-cancel {
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 14px;
+    }
+
+    .dialog-form {
+        grid-template-columns: 1fr !important;
+        border-radius: 5px 40px 5px 5px;
+        padding: var(--space-md) !important;
+        gap: var(--space-md) !important;
+    }
+
+    .form-left {
+        order: 1;
+        width: 100%;
+    }
+
+    .form-right {
+        order: 2;
+        width: 100%;
+    }
+
+    .form-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-md);
+        width: 100%;
+    }
+
+    .form-field {
+        width: 100%;
+    }
+
+    .input-row {
+        width: 100%;
+    }
+
+    .category-wrapper {
+        width: 70%;
+        margin-bottom: -24px;
+        align-self: flex-start;
+    }
+
+    .category-btn {
+        width: 100% !important;
+        justify-content: space-between;
+        padding-left: 5px !important;
+        text-align: left;
+    }
+
+    .category-label-spacer {
+        display: none;
+    }
+
+    .category-dropdown {
+        width: 100%;
+    }
+
+    .questions {
+        border-radius: 5px 40px 5px 5px;
+        padding: var(--space-md) !important;
+    }
+
+    .questions-grid {
+        grid-template-columns: 1fr;
+        row-gap: var(--space-xl);
+    }
+
+    .add-question-cell {
+        grid-column: 1;
+    }
+
+    .add-question-btn {
+        width: 70%;
+        justify-content: center;
+    }
+
+    .dialog-footer {
+        justify-content: stretch;
+    }
+
+    .publish-btn {
+        width: 65%;
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 380px) {
+    .category-wrapper {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 350px) {
+    .input-row input,
+    .input-row textarea {
+        width: 80% !important;
+    }
+}
