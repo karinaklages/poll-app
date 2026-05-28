@@ -175,3 +175,32 @@
         border-radius: var(--radius-sm);
     }
 }
+
+.list-scroll-area {
+    max-height: calc(3 * 160px + 2 * var(--space-md));
+    overflow-y: auto;
+    padding-right: var(--space-xs);
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: var(--color-apricot-dark);
+        border-radius: 3px;
+    }
+}
+
+.list-empty {
+    color: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 18px;
+    padding: var(--space-lg) 0;
+}
+
+.list-sort-option--active {
+    background: var(--color-lilac-middle);
+    font-weight: 600;
+}
