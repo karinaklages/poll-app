@@ -1,0 +1,51 @@
+@media (max-width: 1170px) {
+
+    .list-controls {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: var(--space-md);
+    }
+
+    .list-tabs {
+        gap: var(--space-sm) !important;
+    }
+
+    .list-sort-wrapper {
+        width: 100%;
+    }
+
+    .list-sort {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .list-sort-dropdown {
+        width: 100%;
+    }
+
+    .list-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .list-card {
+        border-radius: 7px 40px 7px 7px;
+    }
+
+    .list-card-title {
+        font-size: 20px;
+    }
+
+    .list-card-badge {
+        align-self: flex-end;
+    }
+
+    .list-scroll-area {
+        max-height: none !important;
+        overflow-y: visible !important;
+        padding-right: 0;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+}

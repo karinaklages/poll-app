@@ -1,0 +1,53 @@
+@media (max-width: 1170px) {
+
+    .section-title {
+        font-size: 54px !important;
+        margin-top: -20px !important;
+        margin-bottom: 28px;
+        white-space: normal !important;
+        line-height: 0.8 !important;
+    }
+
+    .featured-label {
+        font-size: 24px !important;
+        margin-bottom: var(--space-md);
+    }
+
+    .featured-grid {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: var(--space-md);
+        padding: 0 var(--space-md);
+        padding-bottom: var(--space-sm);
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    .featured-card {
+        flex: 0 0 70vw;
+        max-width: 280px;
+        min-height: 200px;
+        aspect-ratio: auto;
+        padding: var(--space-xs) !important;
+        scroll-snap-align: start;
+        margin-bottom: var(--space-lg);
+
+        .featured-card-category {
+            font-size: 14px !important;
+        }
+
+        .featured-card-title {
+            font-size: 24px !important;
+        }
+
+        .featured-card-batch {
+            margin-bottom: 0 !important;
+        }
+    }
+}
