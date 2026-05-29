@@ -109,15 +109,19 @@
 
 @media (max-width: 430px) {
     .dialog {
-        padding: var(--space-lg) !important;
+        padding: var(--space-md) !important;
+    }
+
+    .dialog-cancel {
+        margin-right: 24px !important;
     }
 
     .dialog-form {
-        padding: var(--space-md) var(--space-lg) !important;
+        padding: var(--space-sm) var(--space-md) !important;
     }
 
     .questions {
-        padding: var(--space-md) var(--space-lg) !important;
+        padding: var(--space-sm) var(--space-md) !important;
     }
 
     .question-input,
