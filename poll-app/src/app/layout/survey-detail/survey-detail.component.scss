@@ -1,3 +1,5 @@
+@use 'survey-detail.component.mobile';
+
 // Navigation
 :host {
     display: block;
@@ -6,7 +8,7 @@
 }
 
 .sd-nav {
-    padding: var(--space-md) 0;
+    padding: var(--space-xl) 0;
     background: var(--color-white);
 }
 
@@ -44,6 +46,7 @@
     cursor: pointer;
     overflow: hidden;
     transition: background 0.15s ease, gap 0.2s ease;
+    text-decoration: none;
 
     &:hover {
         background: var(--color-apricot-dark);
@@ -145,7 +148,7 @@
     font-family: var(--font-body);
     font-size: 16px;
     color: var(--color-purple-dark);
-    max-width: 560px;
+    max-width: 100%;
 }
 
 .sd-questions-grid {
@@ -273,12 +276,23 @@
     font-family: var(--font-button);
     font-size: 16px;
     font-weight: 700;
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-lg);
     cursor: pointer;
     transition: background 0.15s ease;
 
     &:hover {
         background: var(--color-apricot-dark);
     }
+}
+
+.sd-completed-msg {
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-orange);
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-lg);
 }
 
 // Right Area
@@ -290,6 +304,7 @@
 
 .sd-results-header {
     margin-bottom: var(--space-lg);
+    white-space: nowrap;
 }
 
 .sd-results-title {
@@ -342,7 +357,7 @@
 .sr-bars {
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs);
+    gap: var(--space-sm);
 }
 
 .sr-bar-row {
