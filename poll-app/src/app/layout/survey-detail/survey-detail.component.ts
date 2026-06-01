@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 
 // Interfaces
@@ -135,7 +135,8 @@ export class SurveyDetailComponent implements OnInit {
 
     constructor(
         private route: ActivatedRoute,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private router: Router
     ) {}
 
     ngOnInit(): void {
@@ -281,4 +282,9 @@ export class SurveyDetailComponent implements OnInit {
     onMouseEnter() { this.hovered = true; }
     onMouseLeave() { this.hovered = false; this.clicked = false; }
     onNavBtnClick() { this.clicked = true; }
+
+    // Close
+    close(): void {
+        this.router.navigate(['/']);
+    }
 }

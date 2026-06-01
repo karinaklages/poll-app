@@ -17,6 +17,10 @@
     @if (isOpen && survey) {
         <div class="sd-card">
 
+            <!-- Mobile Cancel Button -->
+            <button class="sd-card-cancel" (click)="close()">
+                Cancel <span>✕</span>
+            </button>
             <!-- Header -->
             <div class="sd-header">
                 <div class="sd-status-row">

@@ -69,6 +69,7 @@
     .sd-results {
         max-width: 100% !important;
         margin-top: 0 !important;
+        margin-bottom: var(--space-lg);
         padding: var(--space-md);
         background: var(--color-white);
     }
@@ -110,6 +111,12 @@
 
     .sr-bar-track {
         height: 12px;
+    }
+}
+
+@media (min-width: 601px) {
+    .sd-card-cancel {
+        display: none;
     }
 }
 
@@ -185,6 +192,24 @@
     .sr-bar-letter {
         font-size: 13px;
     }
+
+    .sd-card-cancel {
+        display: flex !important;
+        align-items: center;
+        position: absolute;
+        top: 30px;
+        right: 40px;
+        padding: var(--space-sm) var(--space-sm);
+        background: var(--color-apricot-light);
+        color: var(--color-purple-dark);
+        font-family: var(--font-button);
+        font-size: 14px;
+        font-weight: 700;
+        border-radius: var(--radius-sm);
+        border: none;
+        cursor: pointer;
+        gap: var(--space-xs);
+    }
 }
 
 @media (max-width: 430px) {
@@ -200,6 +225,11 @@
     .sd-page,
     .sd-card,
     .sd-results {
-        padding: var(--space-sm) var(--space-md) !important;
+        padding: var(--space-md) var(--space-md) !important;
+    }
+
+    .sd-card-cancel { 
+        top: 12px;
+        right: 45px;
     }
 }
