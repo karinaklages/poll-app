@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators, AbstractControl } from '@angular/forms';
+import { Supabase } from '../../supabase';
 
 function minAnswers(min: number) {
     return (control: AbstractControl) => {
@@ -41,7 +42,8 @@ export class SurveyNewComponent implements OnInit {
 
     form!: FormGroup;
 
-    constructor(private fb: FormBuilder) {}
+    private fb = inject(FormBuilder);
+    private supabaseService = inject(Supabase);
 
     ngOnInit() {
         this.form = this.fb.group({
@@ -59,8 +61,8 @@ export class SurveyNewComponent implements OnInit {
             text: ['', [Validators.required, Validators.maxLength(this.maxLength)]],
             allowMultiple: [false],
             answers: this.fb.array(
-            [this.createAnswer('a'), this.createAnswer('b')],
-            minAnswers(2)
+                [this.createAnswer('a'), this.createAnswer('b')],
+                minAnswers(2)
             )
         });
     }
@@ -137,42 +139,45 @@ export class SurveyNewComponent implements OnInit {
     }
 
     // Publish
-    publish() {
+    async publish() {
         if (this.form.invalid) {
             this.form.markAllAsTouched();
             return;
         }
 
-        // Payload – Supabase
-        const payload = this.buildPayload();
-        console.log('Payload for Supabase:', payload);
+        const raw = this.form.getRawValue();
 
-        // TODO: await this.supabaseService.insertSurvey(payload);
+        await this.supabaseService.insertSurvey({
+            title: raw.surveyName,
+            description: raw.describingText || null,
+            end_date: raw.endDate || null,
+            category: raw.selectedCategory
+        });
+
         this.published = true;
-
         this.form.reset();
         this.questionsArray.clear();
         this.questionsArray.push(this.createQuestion());
     }
 
-    private buildPayload() {
-        const raw = this.form.getRawValue();
-        return {
-            name: raw.surveyName,
-            description: raw.describingText || null,
-            end_date: raw.endDate || null,
-            category: raw.selectedCategory,
-            questions: raw.questions.map((q: any, qi: number) => ({
-                order: qi + 1,
-                text: q.text,
-                allow_multiple: q.allowMultiple,
-                answers: q.answers.map((a: any) => ({
-                letter: a.letter,
-                value: a.value
-                }))
-            }))
-        };
-    }
+    // private buildPayload() {
+    //     const raw = this.form.getRawValue();
+    //     return {
+    //         name: raw.surveyName,
+    //         description: raw.describingText || null,
+    //         end_date: raw.endDate || null,
+    //         category: raw.selectedCategory,
+    //         questions: raw.questions.map((q: any, qi: number) => ({
+    //             order: qi + 1,
+    //             text: q.text,
+    //             allow_multiple: q.allowMultiple,
+    //             answers: q.answers.map((a: any) => ({
+    //             letter: a.letter,
+    //             value: a.value
+    //             }))
+    //         }))
+    //     };
+    // }
 
     closePublished() { this.published = false; }
     onMouseEnter() { this.hovered = true; }
