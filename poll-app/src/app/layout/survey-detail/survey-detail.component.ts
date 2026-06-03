@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ViewChild } from '@angular/core';
+import { Component, OnInit, inject, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray } from '@angular/forms';
@@ -69,6 +69,7 @@ export class SurveyDetailComponent implements OnInit {
     private fb = inject(FormBuilder);
     private router = inject(Router);
     private supabaseService = inject(Supabase);
+    private cdr = inject(ChangeDetectorRef);
 
     ngOnInit(): void {
         this.surveyId = this.route.snapshot.paramMap.get('id')!;
@@ -107,6 +108,7 @@ export class SurveyDetailComponent implements OnInit {
 
         this.buildForm(this.survey);
         await this.loadResults();
+        this.cdr.detectChanges();
     }
 
     private async loadResults(): Promise<void> {
@@ -204,6 +206,7 @@ export class SurveyDetailComponent implements OnInit {
         }
 
         await this.loadResults();
+        this.cdr.detectChanges();
         this.completed = true;
         this.form.disable();
     }

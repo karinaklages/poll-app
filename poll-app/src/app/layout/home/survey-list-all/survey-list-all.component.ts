@@ -44,7 +44,6 @@ export class SurveyListAllComponent implements OnInit {
       .from('surveys')
       .select('id, title, category, end_date')
       .not('end_date', 'is', null)
-      .eq('is_active', true);
 
     if (!data) return;
 
@@ -71,8 +70,8 @@ export class SurveyListAllComponent implements OnInit {
 
     return filtered.sort((a, b) =>
       this.activeTab === 'active'
-          ? a.endsAt.getTime() - b.endsAt.getTime()
-          : b.endsAt.getTime() - a.endsAt.getTime()
+        ? a.endsAt.getTime() - b.endsAt.getTime()
+        : b.endsAt.getTime() - a.endsAt.getTime()
     );
   }
 
