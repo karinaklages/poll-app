@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { SurveyListAllComponent } from '../survey-list-all/survey-list-all.component';
+import { Supabase } from '../../../supabase';
 
-interface Survey {
+interface SurveyCard {
     id: string;
     category: string;
     title: string;
@@ -17,14 +18,41 @@ interface Survey {
     templateUrl: './survey-list.component.html',
     styleUrl: './survey-list.component.scss'
 })
-export class SurveyListComponent {
-    featuredSurveys: Survey[] = [
-        { id: '1', category: 'Team Activities', title: "Let's plan the next team event together", endsInDays: 1 },
-        { id: '2', category: 'Health & Wellness', title: 'Fit and wellness survey', endsInDays: 2 },
-        { id: '3', category: 'Gaming & Entertainment', title: 'Gaming habits and favorite games', endsInDays: 3 },
-    ];
+export class SurveyListComponent implements OnInit {
+    featuredSurveys: SurveyCard[] = [];
 
-    constructor(private router: Router) {}
+    private router = inject(Router);
+    private supabaseService = inject(Supabase);
+    private cdr = inject(ChangeDetectorRef);
+
+    async ngOnInit() {
+        const { data } = await this.supabaseService.supabase
+            .from('surveys')
+            .select('id, title, category, end_date')
+            .eq('is_active', true)
+            .not('end_date', 'is', null)
+            .gt('end_date', new Date().toISOString())
+            .order('end_date', { ascending: true })
+            .limit(3);
+
+        if (!data) return;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        this.featuredSurveys = data.map(s => {
+            const end = new Date(s.end_date);
+            end.setHours(0, 0, 0, 0);
+            const diff = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+            return {
+                id: s.id,
+                title: s.title,
+                category: s.category,
+                endsInDays: diff
+            };
+        });
+        this.cdr.detectChanges();
+    }
 
     openSurvey(id: string): void {
         this.router.navigate(['/survey', id]);
