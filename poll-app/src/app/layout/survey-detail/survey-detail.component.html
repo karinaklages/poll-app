@@ -3,8 +3,9 @@
         <a routerLink="/" class="sd-nav-logo">
             <img src="img/logo-darkpurple.svg" alt="Poll App Logo" class="hero-logo-img">
         </a>
-        <a routerLink="/" class="sd-nav-btn"
-            (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" (click)="onNavBtnClick()">
+        <a class="sd-nav-btn"
+            (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()"
+            (click)="dialog.open(); onNavBtnClick(); $event.preventDefault()">
             Create survey
             <div class="sd-nav-btn-plus">
                 <img [src]="clicked ? 'img/button-check.svg' : 'img/button-plus.svg'" [class]="clicked ? 'icon-check' : 'icon-plus'" alt="">
@@ -98,7 +99,7 @@
             @if (!hasResults) {
                 <div class="sd-results-empty">
                     <p class="sd-results-empty-text">
-                        Results will be shown here after participants complete the survey.<br><br>There are no answers yet.
+                        Results will be shown here after participants complete the survey. <br><br>There are no answers yet.
                     </p>
                 </div>
             } @else {
@@ -124,3 +125,5 @@
         </div>
     }
 </div>
+
+<app-survey-new #dialog />

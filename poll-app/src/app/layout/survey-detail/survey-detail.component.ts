@@ -1,10 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { Supabase } from '../../supabase';
+import { SurveyNewComponent } from '../survey-new/survey-new.component';
 
-// Interfaces
 export interface SurveyAnswer {
     letter: string;
     value: string;
@@ -42,11 +42,13 @@ export interface QuestionResult {
 @Component({
     selector: 'app-survey-detail',
     standalone: true,
-    imports: [CommonModule, RouterLink, ReactiveFormsModule],
+    imports: [CommonModule, RouterLink, ReactiveFormsModule, SurveyNewComponent],
     templateUrl: './survey-detail.component.html',
     styleUrl: './survey-detail.component.scss'
 })
 export class SurveyDetailComponent implements OnInit {
+
+    @ViewChild('dialog') dialog!: SurveyNewComponent;
 
     surveyId!: string;
     isOpen = true;
@@ -73,9 +75,7 @@ export class SurveyDetailComponent implements OnInit {
         this.loadSurvey();
     }
 
-    // Data Loading
     private async loadSurvey(): Promise<void> {
-        // Survey
         const { data: surveyData } = await this.supabaseService.supabase
             .from('surveys')
             .select('*')
@@ -84,7 +84,6 @@ export class SurveyDetailComponent implements OnInit {
 
         if (!surveyData) return;
 
-        // Questions
         const { data: questionsData } = await this.supabaseService.supabase
             .from('questions')
             .select('*')
@@ -136,7 +135,6 @@ export class SurveyDetailComponent implements OnInit {
         this.results = updatedResults;
     }
 
-    // Form
     private buildForm(survey: Survey): void {
         const questionControls = survey.questions.map(q =>
             this.fb.group({
@@ -161,7 +159,6 @@ export class SurveyDetailComponent implements OnInit {
             .get('selectedAnswers') as FormArray;
     }
 
-    // Answer Selection
     onAnswerChange(questionIndex: number, answerIndex: number): void {
         if (!this.survey) return;
 
@@ -174,14 +171,12 @@ export class SurveyDetailComponent implements OnInit {
         });
     }
 
-    // Format Helpers
     formatDate(dateStr: string | null): string {
         if (!dateStr) return '';
         const d = new Date(dateStr);
         return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
     }
 
-    // Submit
     async completeSurvey(): Promise<void> {
         if (!this.survey) return;
 
@@ -213,12 +208,10 @@ export class SurveyDetailComponent implements OnInit {
         this.form.disable();
     }
 
-    // Navigation Button
     onMouseEnter() { this.hovered = true; }
     onMouseLeave() { this.hovered = false; this.clicked = false; }
     onNavBtnClick() { this.clicked = true; }
 
-    // Close
     close(): void {
         this.router.navigate(['/']);
     }
