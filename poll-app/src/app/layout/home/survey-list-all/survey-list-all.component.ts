@@ -1,6 +1,7 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Supabase } from '../../../supabase';
 
 interface Survey {
   id: string;
@@ -16,7 +17,7 @@ interface Survey {
   templateUrl: './survey-list-all.component.html',
   styleUrl: './survey-list-all.component.scss'
 })
-export class SurveyListAllComponent {
+export class SurveyListAllComponent implements OnInit {
 
   readonly categories = [
     'Team Activities',
@@ -27,21 +28,35 @@ export class SurveyListAllComponent {
     'Technology & Innovation',
   ];
 
-  // Later: Supabase Call
-  private readonly allSurveys: Survey[] = [
-    { id: '1', category: 'Team Activities', title: "Let's plan the next team event together", endsAt: new Date(Date.now() + 1 * 86400000) },
-    { id: '2', category: 'Gaming & Entertainment', title: 'Gaming habits and favorite games', endsAt: new Date(Date.now() + 3 * 86400000) },
-    { id: '3', category: 'Gaming & Entertainment', title: 'Gaming habits and favorite games', endsAt: new Date(Date.now() + 3 * 86400000) },
-    { id: '4', category: 'Health & Wellness', title: 'Healthier future: Fit and wellness survey', endsAt: new Date(Date.now() + 2 * 86400000) },
-    { id: '5', category: 'Health & Wellness', title: 'Healthier future: Fit and wellness survey', endsAt: new Date(Date.now() - 2 * 86400000) },
-    { id: '6', category: 'Team Activities', title: "Let's plan the next team event together", endsAt: new Date(Date.now() - 5 * 86400000) },
-  ];
+  private allSurveys: Survey[] = [];
 
   activeTab: 'active' | 'past' = 'active';
   sortOpen = false;
   selectedCategory: string | null = null;
 
-  constructor(private elementRef: ElementRef, private router: Router) {}
+  private elementRef = inject(ElementRef);
+  private router = inject(Router);
+  private supabaseService = inject(Supabase);
+  private cdr = inject(ChangeDetectorRef);
+
+  async ngOnInit() {
+    const { data } = await this.supabaseService.supabase
+      .from('surveys')
+      .select('id, title, category, end_date')
+      .not('end_date', 'is', null)
+      .eq('is_active', true);
+
+    if (!data) return;
+
+    this.allSurveys = data.map((s: any) => ({
+      id: s.id,
+      title: s.title,
+      category: s.category,
+      endsAt: new Date(s.end_date)
+    }));
+
+    this.cdr.detectChanges();
+  }
 
   get surveys(): Survey[] {
     const now = new Date();
@@ -56,8 +71,8 @@ export class SurveyListAllComponent {
 
     return filtered.sort((a, b) =>
       this.activeTab === 'active'
-        ? a.endsAt.getTime() - b.endsAt.getTime()
-        : b.endsAt.getTime() - a.endsAt.getTime()
+          ? a.endsAt.getTime() - b.endsAt.getTime()
+          : b.endsAt.getTime() - a.endsAt.getTime()
     );
   }
 
