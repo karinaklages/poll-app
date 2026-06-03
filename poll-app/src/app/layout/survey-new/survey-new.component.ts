@@ -147,12 +147,16 @@ export class SurveyNewComponent implements OnInit {
 
         const raw = this.form.getRawValue();
 
-        await this.supabaseService.insertSurvey({
+        const survey = await this.supabaseService.insertSurvey({
             title: raw.surveyName,
             description: raw.describingText || null,
             end_date: raw.endDate || null,
             category: raw.selectedCategory
         });
+
+        if (survey) {
+            await this.supabaseService.insertQuestions(survey.id, raw.questions);
+        }
 
         this.published = true;
         this.form.reset();

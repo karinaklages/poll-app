@@ -16,10 +16,9 @@ interface Question {
     id: string
     survey_id: string | null
     question_text: string
-    question_type: string
     options: any | null
     sort_order: number
-    is_required: boolean
+    allow_multiple: boolean
     created_at: string
 }
 
@@ -86,5 +85,21 @@ export class Supabase {
 
         if (error) console.error(error)
         return survey
+    }
+
+    async insertQuestions(surveyId: string, questions: any[]) {
+        const rows = questions.map((q, i) => ({
+            survey_id: surveyId,
+            question_text: q.text,
+            options: q.answers.map((a: any) => ({ letter: a.letter, value: a.value })),
+            sort_order: i + 1,
+            allow_multiple: q.allowMultiple
+        }))
+
+        const { error } = await this.supabase
+            .from('questions')
+            .insert(rows)
+
+        if (error) console.error(error)
     }
 }
