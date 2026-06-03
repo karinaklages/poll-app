@@ -164,25 +164,6 @@ export class SurveyNewComponent implements OnInit {
         this.questionsArray.push(this.createQuestion());
     }
 
-    // private buildPayload() {
-    //     const raw = this.form.getRawValue();
-    //     return {
-    //         name: raw.surveyName,
-    //         description: raw.describingText || null,
-    //         end_date: raw.endDate || null,
-    //         category: raw.selectedCategory,
-    //         questions: raw.questions.map((q: any, qi: number) => ({
-    //             order: qi + 1,
-    //             text: q.text,
-    //             allow_multiple: q.allowMultiple,
-    //             answers: q.answers.map((a: any) => ({
-    //             letter: a.letter,
-    //             value: a.value
-    //             }))
-    //         }))
-    //     };
-    // }
-
     closePublished() { this.published = false; }
     onMouseEnter() { this.hovered = true; }
     onMouseLeave() { this.hovered = false; }

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { Supabase } from '../../supabase';
 
 // Interfaces
 export interface SurveyAnswer {
@@ -10,7 +11,7 @@ export interface SurveyAnswer {
 }
 
 export interface SurveyQuestion {
-    id?: string;
+    id: string;
     order: number;
     text: string;
     allow_multiple: boolean;
@@ -23,7 +24,6 @@ export interface Survey {
     description: string | null;
     end_date: string | null;
     category: string | null;
-    status: 'draft' | 'published';
     questions: SurveyQuestion[];
 }
 
@@ -39,75 +39,6 @@ export interface QuestionResult {
     answers: BarAnswer[];
 }
 
-// Later: Supabase Call 
-const MOCK_SURVEY: Survey = {
-    id: '1',
-    name: "Let's plan the next team event together",
-    description: "We want to create team activities that everyone will enjoy – share your preferences and ideas in our survey to help us plan better experiences together.",
-    end_date: '2025-09-01',
-    category: 'Team Activities',
-    status: 'published',
-    questions: [
-        {
-            order: 1,
-            text: 'Which date would work best for you?',
-            allow_multiple: true,
-            answers: [
-                { letter: 'a', value: '19.09.2025, Friday' },
-                { letter: 'b', value: '10.10.2025, Friday' },
-                { letter: 'c', value: '11.10.2025, Saturday' },
-                { letter: 'd', value: '31.10.2025, Friday' },
-            ]
-        },
-        {
-            order: 2,
-            text: 'Choose the activities you prefer',
-            allow_multiple: true,
-            answers: [
-                { letter: 'a', value: 'Outdoor adventure kayaking' },
-                { letter: 'b', value: 'Office Costume Party' },
-                { letter: 'c', value: 'Bowling, mini-golf, volleyball' },
-                { letter: 'd', value: 'Beach party, Music & cocktails' },
-                { letter: 'e', value: 'Escape room' },
-            ]
-        },
-        {
-            order: 3,
-            text: "What's most important to you in a team event?",
-            allow_multiple: false,
-            answers: [
-                { letter: 'a', value: 'Team bonding' },
-                { letter: 'b', value: 'Food and drinks' },
-                { letter: 'c', value: 'Trying something new' },
-                { letter: 'd', value: 'Keeping it stress-free' },
-            ]
-        },
-        {
-            order: 4,
-            text: 'How long would you prefer the event to last?',
-            allow_multiple: false,
-            answers: [
-                { letter: 'a', value: 'Half a day' },
-                { letter: 'b', value: 'Full day' },
-                { letter: 'c', value: 'Evening only' },
-            ]
-        }
-    ]
-};
-
-const MOCK_RESULTS: QuestionResult[] = [
-    {
-        question: 'Which date would work best for you?',
-        answers: [
-            { letter: 'A', value: '19.09.2025, Friday',   count: 5,  percent: 27 },
-            { letter: 'B', value: '10.10.2025, Friday',   count: 8,  percent: 44 },
-            { letter: 'C', value: '11.10.2025, Saturday', count: 1,  percent: 8  },
-            { letter: 'D', value: '31.10.2025, Friday',   count: 4,  percent: 26 },
-        ]
-    }
-];
-
-// Component
 @Component({
     selector: 'app-survey-detail',
     standalone: true,
@@ -118,7 +49,6 @@ const MOCK_RESULTS: QuestionResult[] = [
 export class SurveyDetailComponent implements OnInit {
 
     surveyId!: string;
-
     isOpen = true;
     clicked = false;
     hovered = false;
@@ -133,11 +63,10 @@ export class SurveyDetailComponent implements OnInit {
 
     form!: FormGroup;
 
-    constructor(
-        private route: ActivatedRoute,
-        private fb: FormBuilder,
-        private router: Router
-    ) {}
+    private route = inject(ActivatedRoute);
+    private fb = inject(FormBuilder);
+    private router = inject(Router);
+    private supabaseService = inject(Supabase);
 
     ngOnInit(): void {
         this.surveyId = this.route.snapshot.paramMap.get('id')!;
@@ -145,25 +74,73 @@ export class SurveyDetailComponent implements OnInit {
     }
 
     // Data Loading
-    private loadSurvey(): void {
-        // Later: Superbase Call
-        // const { data } = await this.supabaseService.getSurvey(this.surveyId);
-        this.survey = MOCK_SURVEY;
+    private async loadSurvey(): Promise<void> {
+        // Survey
+        const { data: surveyData } = await this.supabaseService.supabase
+            .from('surveys')
+            .select('*')
+            .eq('id', this.surveyId)
+            .single();
+
+        if (!surveyData) return;
+
+        // Questions
+        const { data: questionsData } = await this.supabaseService.supabase
+            .from('questions')
+            .select('*')
+            .eq('survey_id', this.surveyId)
+            .order('sort_order');
+
+        this.survey = {
+            id: surveyData.id,
+            name: surveyData.title,
+            description: surveyData.description,
+            end_date: surveyData.end_date,
+            category: surveyData.category,
+            questions: (questionsData ?? []).map((q: any) => ({
+                id: q.id,
+                order: q.sort_order,
+                text: q.question_text,
+                allow_multiple: q.allow_multiple,
+                answers: q.options ?? []
+            }))
+        };
+
         this.buildForm(this.survey);
-        this.loadResults();
+        await this.loadResults();
     }
 
-    private loadResults(): void {
-        // Later: Superbase Call
-        // const { data } = await this.supabaseService.getResults(this.surveyId);
-        this.results = MOCK_RESULTS;
+    private async loadResults(): Promise<void> {
+        if (!this.survey) return;
+
+        const rawResults = await this.supabaseService.getResults(this.surveyId);
+
+        const updatedResults: QuestionResult[] = this.survey.questions.map(q => {
+            const questionResponses = rawResults.filter(r => r.question_id === q.id);
+
+            const answers: BarAnswer[] = q.answers.map(a => ({
+                letter: a.letter.toUpperCase(),
+                value: a.value,
+                count: questionResponses.filter(r => r.answer_value === a.letter).length,
+                percent: 0
+            }));
+
+            const total = answers.reduce((sum, a) => sum + a.count, 0);
+            if (total > 0) {
+                answers.forEach(a => a.percent = Math.round((a.count / total) * 100));
+            }
+
+            return { question: q.text, answers };
+        }).filter(r => r.answers.some(a => a.count > 0));
+
+        this.results = updatedResults;
     }
 
     // Form
     private buildForm(survey: Survey): void {
         const questionControls = survey.questions.map(q =>
             this.fb.group({
-                questionId: [q.id ?? q.order.toString()],
+                questionId: [q.id],
                 selectedAnswers: this.fb.array(
                     q.answers.map(() => this.fb.control(false))
                 )
@@ -192,7 +169,6 @@ export class SurveyDetailComponent implements OnInit {
         if (question.allow_multiple) return;
 
         const arr = this.answersArray(questionIndex);
-
         arr.controls.forEach((ctrl, i) => {
             ctrl.setValue(i === answerIndex, { emitEvent: false });
         });
@@ -206,76 +182,35 @@ export class SurveyDetailComponent implements OnInit {
     }
 
     // Submit
-    completeSurvey(): void {
+    async completeSurvey(): Promise<void> {
         if (!this.survey) return;
 
-        const payload = this.buildResponsePayload();
-        console.log('Response payload for Supabase:', payload);
-
-        // TODO: await this.supabaseService.submitResponse(this.surveyId, payload);
-
-        this.updateResultsOptimistically(payload);
-
-        this.completed = true;
-        this.form.disable();
-    }
-
-    private buildResponsePayload() {
+        const respondentToken = crypto.randomUUID();
         const raw = this.form.getRawValue();
-        return {
-            survey_id: this.surveyId,
-            submitted_at: new Date().toISOString(),
-            answers: raw.questions.flatMap((q: any, qi: number) => {
-                const question = this.survey!.questions[qi];
-                return q.selectedAnswers
-                    .map((checked: boolean, ai: number) => checked ? {
-                        question_order: question.order,
-                        answer_letter: question.answers[ai].letter,
-                        answer_value: question.answers[ai].value
-                    } : null)
-                    .filter(Boolean);
-            })
-        };
-    }
 
-    private updateResultsOptimistically(payload: any): void {
-        if (!this.survey) return;
+        const answers = raw.questions.flatMap((q: any, qi: number) => {
+            const question = this.survey!.questions[qi];
+            return q.selectedAnswers
+                .map((checked: boolean, ai: number) => checked ? {
+                    questionId: question.id,
+                    answerLetter: question.answers[ai].letter,
+                    answerValue: question.answers[ai].value
+                } : null)
+                .filter(Boolean);
+        });
 
-        const votesByQuestion = new Map<number, Set<string>>();
-        for (const ans of payload.answers) {
-            if (!votesByQuestion.has(ans.question_order)) {
-                votesByQuestion.set(ans.question_order, new Set());
-            }
-            votesByQuestion.get(ans.question_order)!.add(ans.answer_letter);
+        for (const answer of answers) {
+            await this.supabaseService.submitResponse(
+                this.surveyId,
+                answer.questionId,
+                answer.answerLetter,
+                respondentToken
+            );
         }
 
-        const updatedResults: QuestionResult[] = this.survey.questions.map(q => {
-            const existingResult = this.results.find(r => r.question === q.text);
-            const newVotes = votesByQuestion.get(q.order) ?? new Set();
-
-            const answers: BarAnswer[] = q.answers.map(a => {
-                const existing = existingResult?.answers.find(
-                    r => r.letter.toLowerCase() === a.letter.toLowerCase()
-                );
-                const oldCount = existing?.count ?? 0;
-                const addVote = newVotes.has(a.letter) ? 1 : 0;
-                return {
-                    letter: a.letter.toUpperCase(),
-                    value: a.value,
-                    count: oldCount + addVote,
-                    percent: 0
-                };
-            });
-
-            const total = answers.reduce((sum, a) => sum + a.count, 0);
-            if (total > 0) {
-                answers.forEach(a => a.percent = Math.round((a.count / total) * 100));
-            }
-
-            return { question: q.text, answers };
-        }).filter(r => r.answers.some(a => a.count > 0));
-
-        this.results = updatedResults;
+        await this.loadResults();
+        this.completed = true;
+        this.form.disable();
     }
 
     // Navigation Button

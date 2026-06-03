@@ -24,9 +24,10 @@ interface Question {
 
 interface Response {
     id: string
+    survey_id: string | null
     question_id: string | null
-    answer_value: string 
-    respondent_token: string
+    answer_value: string | null
+    respondent_token: string | null
     submitted_at: string
 }
 
@@ -101,5 +102,28 @@ export class Supabase {
             .insert(rows)
 
         if (error) console.error(error)
+    }
+
+    async submitResponse(surveyId: string, questionId: string, answerValue: string, respondentToken: string) {
+        const { error } = await this.supabase
+            .from('responses')
+            .insert({
+                survey_id: surveyId,
+                question_id: questionId,
+                answer_value: answerValue,
+                respondent_token: respondentToken
+            })
+
+        if (error) console.error(error)
+    }
+
+    async getResults(surveyId: string) {
+        const { data, error } = await this.supabase
+            .from('responses')
+            .select('question_id, answer_value')
+            .eq('survey_id', surveyId)
+
+        if (error) console.error(error)
+        return data ?? []
     }
 }
