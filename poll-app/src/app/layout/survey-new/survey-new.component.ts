@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators, AbstractControl } from '@angular/forms';
 import { Supabase } from '../../supabase';
@@ -44,6 +44,7 @@ export class SurveyNewComponent implements OnInit {
 
     private fb = inject(FormBuilder);
     private supabaseService = inject(Supabase);
+    private cdr = inject(ChangeDetectorRef);
 
     ngOnInit() {
         this.form = this.fb.group({
@@ -159,6 +160,10 @@ export class SurveyNewComponent implements OnInit {
         }
 
         this.published = true;
+        setTimeout(() => {
+            this.published = false;
+            this.cdr.detectChanges();
+        }, 2500);
         this.form.reset();
         this.questionsArray.clear();
         this.questionsArray.push(this.createQuestion());
