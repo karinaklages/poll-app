@@ -17,6 +17,9 @@ export class HeroComponent {
     onMouseEnter() { this.hovered = true; }
     onMouseLeave() { this.hovered = false; this.clicked = false; }
 
+    /**
+     * Emits openNewSurvey and sets clicked state for animation.
+     */
     onSurveyClick() {
         this.clicked = true;
         this.openNewSurvey.emit();

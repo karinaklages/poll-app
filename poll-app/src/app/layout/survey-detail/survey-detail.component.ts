@@ -71,11 +71,17 @@ export class SurveyDetailComponent implements OnInit {
     private supabaseService = inject(Supabase);
     private cdr = inject(ChangeDetectorRef);
 
+    /**
+     * On init, retrieves the survey ID from the route parameters, loads the survey and its questions from Supabase, builds the reactive form based on the survey structure, and loads existing results to display.
+     */
     ngOnInit(): void {
         this.surveyId = this.route.snapshot.paramMap.get('id')!;
         this.loadSurvey();
     }
 
+    /**
+     * Loads the survey details and questions from Supabase, maps them to the Survey interface, builds the reactive form, and loads the results. This is called on component init and after submitting a response to refresh the results.
+     */
     private async loadSurvey(): Promise<void> {
         const surveyData = await this.fetchSurveyData();
         if (!surveyData) return;
@@ -86,6 +92,9 @@ export class SurveyDetailComponent implements OnInit {
         this.cdr.detectChanges();
     }
 
+    /**
+     * Fetches the survey details from Supabase based on the survey ID. Returns null if the survey is not found or if there is an error.
+     */
     private async fetchSurveyData() {
         const { data } = await this.supabaseService.supabase
             .from('surveys').select('*')
@@ -93,6 +102,9 @@ export class SurveyDetailComponent implements OnInit {
         return data;
     }
 
+    /**
+     * Fetches the questions for the survey from Supabase based on the survey ID. Returns null if there are no questions or if there is an error.
+     */
     private async fetchQuestionsData() {
         const { data } = await this.supabaseService.supabase
             .from('questions').select('*')
@@ -100,6 +112,9 @@ export class SurveyDetailComponent implements OnInit {
         return data;
     }
 
+    /**
+     * Maps the raw survey and questions data from Supabase to the Survey interface used in the component. This includes mapping the question options to the answers array and ensuring the correct types are set.
+     */
     private mapToSurvey(surveyData: any, questionsData: any[]): Survey {
         return {
             id: surveyData.id,
@@ -114,6 +129,9 @@ export class SurveyDetailComponent implements OnInit {
         };
     }
 
+    /**
+     * Loads the survey results from Supabase, maps them to the QuestionResult interface, and calculates the count and percentage for each answer option. Only questions with at least one response are included in the results.
+     */
     private async loadResults(): Promise<void> {
         if (!this.survey) return;
         const rawResults = await this.supabaseService.getResults(this.surveyId);
@@ -134,6 +152,9 @@ export class SurveyDetailComponent implements OnInit {
         this.results = updatedResults;
     }
 
+    /**
+     * Builds the reactive form based on the survey structure. Each question is represented as a FormGroup containing a FormArray of answer controls. The answer controls are checkboxes for multiple choice questions and radio buttons for single choice questions. The form is initialized with all answers unchecked.
+     */
     private buildForm(survey: Survey): void {
         const questionControls = survey.questions.map(q =>
             this.fb.group({
@@ -148,15 +169,24 @@ export class SurveyDetailComponent implements OnInit {
         });
     }
 
+    /**
+     * Helper to get the questions FormArray from the form. This is used to dynamically access the question controls and their nested answer controls in the template. The answers FormArray for each question can be accessed through the questionGroup method.
+     */
     get questionsArray(): FormArray {
         return this.form.get('questions') as FormArray;
     }
 
+    /**
+     * Helper to get a specific question FormGroup by index. This is used to access the selectedAnswers FormArray for that question when handling answer changes.
+     */
     answersArray(questionIndex: number): FormArray {
         return (this.questionsArray.at(questionIndex) as FormGroup)
             .get('selectedAnswers') as FormArray;
     }
 
+    /**
+     * Event handler for when an answer option is changed. If the question does not allow multiple answers, this will uncheck all other options when one is selected. This ensures that only one answer can be selected for single choice questions. For multiple choice questions, no changes are made to the other options.
+     */
     onAnswerChange(questionIndex: number, answerIndex: number): void {
         if (!this.survey) return;
         const question = this.survey.questions[questionIndex];
@@ -167,12 +197,18 @@ export class SurveyDetailComponent implements OnInit {
         });
     }
 
+    /**
+     * Formats a date string into a human-readable format (DD.MM.YYYY). If the date string is null, an empty string is returned. This is used to display the survey end date in the template. The date is formatted according to German locale conventions.
+     */
     formatDate(dateStr: string | null): string {
         if (!dateStr) return '';
         const d = new Date(dateStr);
         return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
     }
 
+    /**
+     * Handles the submission of the survey form. It generates a unique respondent token, maps the selected answers to the format expected by Supabase, submits each answer as a response, reloads the results to reflect the new response, and disables the form to prevent multiple submissions. The respondent token is used to group responses from the same user without requiring authentication. After submission, the results are updated to show the new counts and percentages for each answer option.
+     */
     async completeSurvey(): Promise<void> {
         if (!this.survey) return;
         const respondentToken = crypto.randomUUID();
@@ -188,6 +224,9 @@ export class SurveyDetailComponent implements OnInit {
         this.form.disable();
     }
 
+    /**
+     * Maps the form values to an array of answers in the format expected by Supabase. It iterates through each question and its selected answers, creating an object for each selected answer that includes the question ID, answer letter, and answer value. Only selected answers are included in the resulting array. This method is called when submitting the survey to prepare the data for insertion into the database.
+     */
     private mapFormAnswers() {
         const raw = this.form.getRawValue();
         return raw.questions.flatMap((q: any, qi: number) => {
@@ -202,10 +241,16 @@ export class SurveyDetailComponent implements OnInit {
         });
     }
 
+    /**
+     * Event handlers for mouse enter, mouse leave, and navigation button click. These are used to manage the hovered and clicked states for styling purposes. When the user hovers over the survey card, the hovered state is set to true, which can trigger a visual change in the template. When the mouse leaves the card, the hovered state is set to false and the clicked state is reset. When the navigation button is clicked, the clicked state is set to true, which can also trigger a visual change. These states help provide feedback to the user about their interactions with the survey card.
+     */
     onMouseEnter() { this.hovered = true; }
     onMouseLeave() { this.hovered = false; this.clicked = false; }
     onNavBtnClick() { this.clicked = true; }
 
+    /**
+     * Navigates back to the home page when the close button is clicked. This is used to exit the survey detail view and return to the list of surveys. The router is used to programmatically navigate to the root path, which corresponds to the home page. This method is called when the user clicks the close button in the template.
+     */
     close(): void {
         this.router.navigate(['/']);
     }

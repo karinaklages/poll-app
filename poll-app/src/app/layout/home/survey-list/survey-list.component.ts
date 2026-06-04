@@ -25,6 +25,9 @@ export class SurveyListComponent implements OnInit {
     private supabaseService = inject(Supabase);
     private cdr = inject(ChangeDetectorRef);
 
+    /**
+     * Loads featured surveys on component init.
+     */
     async ngOnInit() {
         const data = await this.fetchSurveys();
         if (!data) return;
@@ -32,6 +35,9 @@ export class SurveyListComponent implements OnInit {
         this.cdr.detectChanges();
     }
 
+    /**
+     * Fetches the three next active surveys ordered by end date.
+     */
     private async fetchSurveys() {
         const { data } = await this.supabaseService.supabase
             .from('surveys')
@@ -44,6 +50,10 @@ export class SurveyListComponent implements OnInit {
         return data;
     }
 
+    /**
+     * Maps raw Supabase rows to SurveyCards.
+     * Days are calculated from midnight to midnight to avoid partial-day drift.
+     */
     private mapToSurveyCards(data: any[]): SurveyCard[] {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -55,6 +65,9 @@ export class SurveyListComponent implements OnInit {
         });
     }
 
+    /**
+     * Navigates to the survey detail page.
+     */
     openSurvey(id: string): void {
         this.router.navigate(['/survey', id]);
     }
