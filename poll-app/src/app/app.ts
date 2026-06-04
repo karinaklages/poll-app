@@ -1,6 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Supabase } from './supabase';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +8,5 @@ import { Supabase } from './supabase';
   styleUrl: './app.scss'
 })
 export class App {
-  databaseService = inject(Supabase)
   protected readonly title = signal('poll-app');
-
-  ngOnInit() {
-    this.databaseService.getSurveys()
-  }
 }
