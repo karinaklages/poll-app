@@ -145,25 +145,33 @@ export class SurveyNewComponent implements OnInit {
             this.form.markAllAsTouched();
             return;
         }
+        await this.insertSurvey();
+        this.showPublishedToast();
+        this.resetForm();
+    }
 
+    private async insertSurvey() {
         const raw = this.form.getRawValue();
-
         const survey = await this.supabaseService.insertSurvey({
             title: raw.surveyName,
             description: raw.describingText || null,
             end_date: raw.endDate || null,
             category: raw.selectedCategory
         });
-
         if (survey) {
             await this.supabaseService.insertQuestions(survey.id, raw.questions);
         }
+    }
 
+    private showPublishedToast() {
         this.published = true;
         setTimeout(() => {
             this.published = false;
             this.cdr.detectChanges();
         }, 2500);
+    }
+
+    private resetForm() {
         this.form.reset();
         this.questionsArray.clear();
         this.questionsArray.push(this.createQuestion());

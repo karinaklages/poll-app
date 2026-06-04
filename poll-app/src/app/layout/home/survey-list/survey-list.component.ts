@@ -26,6 +26,13 @@ export class SurveyListComponent implements OnInit {
     private cdr = inject(ChangeDetectorRef);
 
     async ngOnInit() {
+        const data = await this.fetchSurveys();
+        if (!data) return;
+        this.featuredSurveys = this.mapToSurveyCards(data);
+        this.cdr.detectChanges();
+    }
+
+    private async fetchSurveys() {
         const { data } = await this.supabaseService.supabase
             .from('surveys')
             .select('id, title, category, end_date')
@@ -34,24 +41,18 @@ export class SurveyListComponent implements OnInit {
             .gt('end_date', new Date().toISOString())
             .order('end_date', { ascending: true })
             .limit(3);
+        return data;
+    }
 
-        if (!data) return;
-
+    private mapToSurveyCards(data: any[]): SurveyCard[] {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-
-        this.featuredSurveys = data.map(s => {
+        return data.map(s => {
             const end = new Date(s.end_date);
             end.setHours(0, 0, 0, 0);
             const diff = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-            return {
-                id: s.id,
-                title: s.title,
-                category: s.category,
-                endsInDays: diff
-            };
+            return { id: s.id, title: s.title, category: s.category, endsInDays: diff };
         });
-        this.cdr.detectChanges();
     }
 
     openSurvey(id: string): void {

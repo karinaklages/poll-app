@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { HeroComponent } from './hero/hero.component';
 import { SurveyListComponent } from './survey-list/survey-list.component';
 import { SurveyNewComponent } from '../survey-new/survey-new.component';
-import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-home',

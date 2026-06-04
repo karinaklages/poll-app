@@ -43,35 +43,31 @@ export class SurveyListAllComponent implements OnInit {
     const { data } = await this.supabaseService.supabase
       .from('surveys')
       .select('id, title, category, end_date')
-      .not('end_date', 'is', null)
-
+      .not('end_date', 'is', null);
     if (!data) return;
+    this.allSurveys = this.mapToSurveys(data);
+    this.cdr.detectChanges();
+  }
 
-    this.allSurveys = data.map((s: any) => ({
+  private mapToSurveys(data: any[]): Survey[] {
+    return data.map(s => ({
       id: s.id,
       title: s.title,
       category: s.category,
       endsAt: new Date(s.end_date)
     }));
-
-    this.cdr.detectChanges();
   }
 
   get surveys(): Survey[] {
     const now = new Date();
-
     let filtered = this.allSurveys.filter(s =>
       this.activeTab === 'active' ? s.endsAt >= now : s.endsAt < now
     );
-
     if (this.selectedCategory) {
       filtered = filtered.filter(s => s.category === this.selectedCategory);
     }
-
     return filtered.sort((a, b) =>
-      this.activeTab === 'active'
-        ? a.endsAt.getTime() - b.endsAt.getTime()
-        : b.endsAt.getTime() - a.endsAt.getTime()
+      this.activeTab === 'active' ? a.endsAt.getTime() - b.endsAt.getTime() : b.endsAt.getTime() - a.endsAt.getTime()
     );
   }
 

@@ -32,7 +32,7 @@ interface Response {
 }
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class Supabase {
     supabaseUrl = 'https://ogudjorvmctzuybwqtip.supabase.co'
@@ -69,23 +69,24 @@ export class Supabase {
         this.responses.set(responses)
     }
 
+    private buildSurveyPayload(data: { title: string, description: string | null, end_date: string | null, category: string }) {
+        return {
+            title: data.title,
+            description: data.description,
+            end_date: data.end_date,
+            category: data.category,
+            is_active: data.end_date ? new Date(data.end_date) >= new Date() : true
+        };
+    }
+
     async insertSurvey(data: { title: string, description: string | null, end_date: string | null, category: string }) {
-        const is_active = data.end_date ? new Date(data.end_date) >= new Date() : true
-        
         const { data: survey, error } = await this.supabase
             .from('surveys')
-            .insert({
-                title: data.title,
-                description: data.description,
-                end_date: data.end_date,
-                category: data.category,
-                is_active
-            })
+            .insert(this.buildSurveyPayload(data))
             .select()
-            .single()
-
-        if (error) console.error(error)
-        return survey
+            .single();
+        if (error) console.error(error);
+        return survey;
     }
 
     async insertQuestions(surveyId: string, questions: any[]) {
@@ -96,11 +97,9 @@ export class Supabase {
             sort_order: i + 1,
             allow_multiple: q.allowMultiple
         }))
-
         const { error } = await this.supabase
             .from('questions')
             .insert(rows)
-
         if (error) console.error(error)
     }
 
@@ -113,7 +112,6 @@ export class Supabase {
                 answer_value: answerValue,
                 respondent_token: respondentToken
             })
-
         if (error) console.error(error)
     }
 
@@ -122,7 +120,6 @@ export class Supabase {
             .from('responses')
             .select('question_id, answer_value')
             .eq('survey_id', surveyId)
-
         if (error) console.error(error)
         return data ?? []
     }

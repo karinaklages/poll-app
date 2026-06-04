@@ -77,63 +77,60 @@ export class SurveyDetailComponent implements OnInit {
     }
 
     private async loadSurvey(): Promise<void> {
-        const { data: surveyData } = await this.supabaseService.supabase
-            .from('surveys')
-            .select('*')
-            .eq('id', this.surveyId)
-            .single();
-
+        const surveyData = await this.fetchSurveyData();
         if (!surveyData) return;
-
-        const { data: questionsData } = await this.supabaseService.supabase
-            .from('questions')
-            .select('*')
-            .eq('survey_id', this.surveyId)
-            .order('sort_order');
-
-        this.survey = {
-            id: surveyData.id,
-            name: surveyData.title,
-            description: surveyData.description,
-            end_date: surveyData.end_date,
-            category: surveyData.category,
-            questions: (questionsData ?? []).map((q: any) => ({
-                id: q.id,
-                order: q.sort_order,
-                text: q.question_text,
-                allow_multiple: q.allow_multiple,
-                answers: q.options ?? []
-            }))
-        };
-
+        const questionsData = await this.fetchQuestionsData();
+        this.survey = this.mapToSurvey(surveyData, questionsData ?? []);
         this.buildForm(this.survey);
         await this.loadResults();
         this.cdr.detectChanges();
     }
 
+    private async fetchSurveyData() {
+        const { data } = await this.supabaseService.supabase
+            .from('surveys').select('*')
+            .eq('id', this.surveyId).single();
+        return data;
+    }
+
+    private async fetchQuestionsData() {
+        const { data } = await this.supabaseService.supabase
+            .from('questions').select('*')
+            .eq('survey_id', this.surveyId).order('sort_order');
+        return data;
+    }
+
+    private mapToSurvey(surveyData: any, questionsData: any[]): Survey {
+        return {
+            id: surveyData.id,
+            name: surveyData.title,
+            description: surveyData.description,
+            end_date: surveyData.end_date,
+            category: surveyData.category,
+            questions: questionsData.map(q => ({
+                id: q.id, order: q.sort_order, text: q.question_text,
+                allow_multiple: q.allow_multiple, answers: q.options ?? []
+            }))
+        };
+    }
+
     private async loadResults(): Promise<void> {
         if (!this.survey) return;
-
         const rawResults = await this.supabaseService.getResults(this.surveyId);
-
         const updatedResults: QuestionResult[] = this.survey.questions.map(q => {
             const questionResponses = rawResults.filter(r => r.question_id === q.id);
-
             const answers: BarAnswer[] = q.answers.map(a => ({
                 letter: a.letter.toUpperCase(),
                 value: a.value,
                 count: questionResponses.filter(r => r.answer_value === a.letter).length,
                 percent: 0
             }));
-
             const total = answers.reduce((sum, a) => sum + a.count, 0);
             if (total > 0) {
                 answers.forEach(a => a.percent = Math.round((a.count / total) * 100));
             }
-
             return { question: q.text, answers };
         }).filter(r => r.answers.some(a => a.count > 0));
-
         this.results = updatedResults;
     }
 
@@ -146,7 +143,6 @@ export class SurveyDetailComponent implements OnInit {
                 )
             })
         );
-
         this.form = this.fb.group({
             questions: this.fb.array(questionControls)
         });
@@ -163,10 +159,8 @@ export class SurveyDetailComponent implements OnInit {
 
     onAnswerChange(questionIndex: number, answerIndex: number): void {
         if (!this.survey) return;
-
         const question = this.survey.questions[questionIndex];
         if (question.allow_multiple) return;
-
         const arr = this.answersArray(questionIndex);
         arr.controls.forEach((ctrl, i) => {
             ctrl.setValue(i === answerIndex, { emitEvent: false });
@@ -181,11 +175,22 @@ export class SurveyDetailComponent implements OnInit {
 
     async completeSurvey(): Promise<void> {
         if (!this.survey) return;
-
         const respondentToken = crypto.randomUUID();
-        const raw = this.form.getRawValue();
+        const answers = this.mapFormAnswers();
+        for (const answer of answers) {
+            await this.supabaseService.submitResponse(
+                this.surveyId, answer.questionId, answer.answerLetter, respondentToken
+            );
+        }
+        await this.loadResults();
+        this.cdr.detectChanges();
+        this.completed = true;
+        this.form.disable();
+    }
 
-        const answers = raw.questions.flatMap((q: any, qi: number) => {
+    private mapFormAnswers() {
+        const raw = this.form.getRawValue();
+        return raw.questions.flatMap((q: any, qi: number) => {
             const question = this.survey!.questions[qi];
             return q.selectedAnswers
                 .map((checked: boolean, ai: number) => checked ? {
@@ -195,20 +200,6 @@ export class SurveyDetailComponent implements OnInit {
                 } : null)
                 .filter(Boolean);
         });
-
-        for (const answer of answers) {
-            await this.supabaseService.submitResponse(
-                this.surveyId,
-                answer.questionId,
-                answer.answerLetter,
-                respondentToken
-            );
-        }
-
-        await this.loadResults();
-        this.cdr.detectChanges();
-        this.completed = true;
-        this.form.disable();
     }
 
     onMouseEnter() { this.hovered = true; }
