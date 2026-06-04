@@ -35,7 +35,9 @@
     } @else {
       <div class="list-grid">
         @for (survey of surveys; track survey.id) {
-          <div class="list-card" (click)="openSurvey(survey.id)">
+          <div class="list-card"
+            [class.list-card--past]="activeTab === 'past'"
+            (click)="activeTab === 'active' && openSurvey(survey.id)">
             <div class="list-card-top">
               <span class="list-card-category">{{ survey.category }}</span>
               <h4 class="list-card-title">{{ survey.title }}</h4>
