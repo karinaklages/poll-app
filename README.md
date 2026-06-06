@@ -31,7 +31,9 @@ This app is part of the Developer Akademie's training programme for software dev
    ng build --base-href "/angular-projects/poll-app/"
 ```
 
-###
+<br>
+
+## Visuals
 
 ![Poll App](./poll-app/public/img/poll-app-1.jpg)<br>
 ![Poll App](./poll-app/public/img/poll-app-2.jpg)<br>
