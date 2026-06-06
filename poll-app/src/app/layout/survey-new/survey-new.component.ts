@@ -22,6 +22,18 @@ function minQuestions(control: AbstractControl) {
     return arr.length >= 1 ? null : { minQuestions: true };
 }
 
+/**
+ * Custom validator to ensure the selected end date for the survey is not in the past. This is used to validate the endDate form control in the survey creation form. The validator checks if the selected date is today or in the future, and returns an error object if the date is in the past. This ensures that users cannot set an end date for their survey that has already passed, which would not make sense for a survey's active period.
+ */
+function futureDateValidator(control: AbstractControl) {
+    if (!control.value) return null;
+    const selected = new Date(control.value);
+    selected.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return selected >= today ? null : { pastDate: true };
+}
+
 @Component({
     selector: 'app-survey-new',
     standalone: true,
@@ -59,7 +71,7 @@ export class SurveyNewComponent implements OnInit {
         this.form = this.fb.group({
             surveyName: ['', [Validators.required, Validators.maxLength(this.maxLength)]],
             describingText: ['', Validators.maxLength(this.maxLength)],
-            endDate: [null, Validators.required],
+            endDate: [null, [Validators.required, futureDateValidator]],
             selectedCategory: [null, Validators.required],
             questions: this.fb.array([this.createQuestion()], minQuestions)
         });

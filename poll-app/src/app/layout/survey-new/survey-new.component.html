@@ -40,9 +40,14 @@
                                         <img src="img/delete-hover.svg" class="icon-hover" alt="">
                                     </button>
                                 </div>
-                                @if (form.get('endDate')?.invalid && form.get('endDate')?.touched) {
-                                    <span class="field-error">End date is required.</span>
-                                }
+                                <div class="field-error-slot">
+                                    @if (form.get('endDate')?.errors?.['required'] && form.get('endDate')?.touched) {
+                                        <span class="field-error">End date is required.</span>
+                                    }
+                                    @if (form.get('endDate')?.errors?.['pastDate'] && form.get('endDate')?.touched) {
+                                        <span class="field-error">End date cannot be in the past.</span>
+                                    }
+                                </div>
                             </div>
                             <div class="category-wrapper">
                                 <button type="button" class="category-btn" (click)="toggleCategory()">

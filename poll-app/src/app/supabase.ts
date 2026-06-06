@@ -147,4 +147,18 @@ export class Supabase {
         if (error) console.error(error)
         return data ?? []
     }
+
+    /**
+     * Subscribes to realtime INSERT events on the surveys table. Calls the provided callback with the new survey row. Returns the channel so the caller can unsubscribe on destroy.
+     */
+    subscribeToSurveys(onInsert: (survey: Survey) => void) {
+        return this.supabase
+            .channel('surveys-realtime')
+            .on(
+                'postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'surveys' },
+                (payload) => onInsert(payload.new as Survey)
+            )
+            .subscribe();
+    }
 }
