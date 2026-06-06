@@ -62,7 +62,6 @@
     color: var(--color-purple-dark);
     font-size: 16px;
     font-weight: 600;
-    border-radius: var(--radius-sm);
     align-self: flex-start;
     border-radius: 0 16px 0 0;
 }
@@ -117,6 +116,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
+    position: relative;
+    padding-bottom: 20px;
 
     label {
         font-family: var(--font-body);
@@ -182,6 +183,7 @@
 // Category
 .category-wrapper {
     position: relative;
+    padding-bottom: 20px;
 }
 
 .category-label-spacer {
@@ -350,7 +352,7 @@
     cursor: pointer;
     transition: background 0.15s ease;
     display: flex;
-    align-items: flex-center;
+    align-items: center;
     gap: var(--space-sm);
     margin-top: -5px;
 
@@ -461,7 +463,6 @@
     display: flex;
     align-items: center;
     gap: var(--space-sm);
-    margin-top: 0;
 
     img {
         width: 20px;
@@ -489,6 +490,7 @@
     gap: var(--space-xs);
     font-family: var(--font-body);
     font-size: 13px;
+    color: var(--color-white);
 }
 
 .add-answer-btn--disabled {
@@ -499,6 +501,35 @@
 
 .invisible {
     visibility: hidden;
+}
+
+// Validation
+.field-error {
+    color: var(--color-orange);
+    font-size: 13px;
+    font-family: var(--font-body);
+}
+
+.field-error-slot {
+    min-height: 20px;
+    display: block;
+    margin-top: var(--space-xs);
+}
+
+.form-field {
+    .field-error {
+        position: absolute;
+        bottom: 2px;
+        left: 0;
+    }
+}
+
+.category-wrapper {
+    .field-error {
+        position: absolute;
+        bottom: 2px;
+        left: var(--space-lg);
+    }
 }
 
 // Footer
@@ -520,7 +551,6 @@
     font-size: 18px;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.15s ease;
     overflow: hidden;
     transition: background 0.15s ease, gap 0.2s ease;
 
@@ -543,7 +573,7 @@
     overflow: hidden;
     transition: width 0.2s ease, opacity 0.2s ease;
     display: flex;
-    align-items: center; 
+    align-items: center;
 }
 
 .published-toast {
@@ -579,15 +609,4 @@
         margin-top: 6px;
         margin-right: 16px;
     }
-}
-
-.field-error {
-    color: var(--color-orange);
-    font-size: 13px;
-    font-family: var(--font-body);
-    margin-top: 2px;
-}
-
-.category-wrapper > .field-error {
-    margin-left: var(--space-lg);
 }

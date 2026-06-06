@@ -91,10 +91,12 @@
                                     </button>
                                 </div>
                                 <input type="text" class="question-input" formControlName="text" [maxlength]="maxLength" placeholder="What would you like to ask?">
-                                @if (questionGroup(i).get('text')?.invalid && questionGroup(i).get('text')?.touched) {
-                                    <span class="field-error">Question text is required.</span>
-                                }
-                                <div class="answers-header">
+                                    <div class="field-error-slot">
+                                        @if (questionGroup(i).get('text')?.invalid && questionGroup(i).get('text')?.touched) {
+                                            <span class="field-error">Question text is required.</span>
+                                        }
+                                    </div>
+                                    <div class="answers-header">
                                     <span class="answers-label">Answers</span>
                                     <label class="multiple-label">
                                         <input type="checkbox" formControlName="allowMultiple" class="checkbox-hidden">
@@ -118,9 +120,11 @@
                                         </div>
                                     }
                                 </div>
-                                @if (answersArray(i).invalid && answersArray(i).touched) {
-                                    <span class="field-error">Please fill in at least 2 answers.</span>
-                                }
+                                <div class="field-error-slot">
+                                    @if (answersArray(i).invalid && answersArray(i).touched) {
+                                        <span class="field-error">Please fill in at least 2 answers.</span>
+                                    }
+                                </div>
                                 <div class="add-answer-btn-row">
                                     <button type="button" class="add-answer-btn" (click)="addAnswer(i)" [disabled]="answersArray(i).length >= 6" [class.add-answer-btn--disabled]="answersArray(i).length >= 6">
                                         Add answer <img src="img/button-plus-white.svg" alt="">
