@@ -190,11 +190,62 @@ export class SurveyDetailComponent implements OnInit {
     onAnswerChange(questionIndex: number, answerIndex: number): void {
         if (!this.survey) return;
         const question = this.survey.questions[questionIndex];
-        if (question.allow_multiple) return;
-        const arr = this.answersArray(questionIndex);
-        arr.controls.forEach((ctrl, i) => {
-            ctrl.setValue(i === answerIndex, { emitEvent: false });
-        });
+        if (!question.allow_multiple) {
+            const arr = this.answersArray(questionIndex);
+            arr.controls.forEach((ctrl, i) => {
+                ctrl.setValue(i === answerIndex, { emitEvent: false });
+            });
+        }
+        this.previewResults();
+    }
+
+    /** 
+     * Fetches current form selections as an array of selected answer letters per question.
+     */
+    private getSelectedLetters(qi: number): string[] {
+        const formRaw = this.form.getRawValue();
+        return formRaw.questions[qi].selectedAnswers
+            .map((checked: boolean, ai: number) => checked ? this.survey!.questions[qi].answers[ai].letter : null)
+            .filter(Boolean);
+    }
+
+    /** 
+     * Builds BarAnswer array for one question, merging submitted responses with current preview selection.
+     */
+    private buildPreviewAnswers(q: SurveyQuestion, submitted: any[], selected: string[]): BarAnswer[] {
+        const answers: BarAnswer[] = q.answers.map(a => ({
+            letter: a.letter.toUpperCase(),
+            value: a.value,
+            count: submitted.filter(r => r.answer_value === a.letter).length + (selected.includes(a.letter) ? 1 : 0),
+            percent: 0
+        }));
+        const total = answers.reduce((sum, a) => sum + a.count, 0);
+        if (total > 0) answers.forEach(a => a.percent = Math.round((a.count / total) * 100));
+        return answers;
+    }
+
+    /**
+     * Maps all survey questions to QuestionResult, combining DB responses with live form state.
+     */
+    private buildPreviewResults(rawResults: any[]): QuestionResult[] {
+        return this.survey!.questions.map((q, qi) => ({
+            question: q.text,
+            answers: this.buildPreviewAnswers(
+                q,
+                rawResults.filter(r => r.question_id === q.id),
+                this.getSelectedLetters(qi)
+            )
+        }));
+    }
+
+    /**
+     * Fetches results and updates the live preview combining submitted and currently selected answers.
+     */
+    private async previewResults(): Promise<void> {
+        if (!this.survey) return;
+        const rawResults = await this.supabaseService.getResults(this.surveyId);
+        this.results = this.buildPreviewResults(rawResults).filter(r => r.answers.some(a => a.count > 0));
+        this.cdr.detectChanges();
     }
 
     /**
